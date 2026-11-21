@@ -1,0 +1,216 @@
+import SwiftUI
+
+/// What the player has done in every quest, plus sign-in and resetting.
+struct MyProgressView: View {
+    @Environment(ProgressStore.self) private var progress
+    @Environment(AccountStore.self) private var account
+    @Environment(\.dismiss) private var dismiss
+    @State private var confirmingSignOut = false
+    @State private var debugShowsReset = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    if account.isSignedIn {
+                        LabeledContent("Signed in", value: account.name ?? "With Apple")
+                    } else {
+                        AppleSignInButton()
+                    }
+                } header: {
+                    Text("Account")
+                } footer: {
+                    Text(account.isSignedIn
+                         ? "Your progress is saved to iCloud and shows up on any iPhone where you sign in."
+                         : "Right now your progress is saved on this iPhone only.")
+                }
+
+                ForEach(Quest.all) { quest in
+                    QuestProgressSection(quest: quest)
+                }
+
+                if progress.hasAnyProgress {
+                    Section {
+                        NavigationLink {
+                            ResetProgressView(target: .everything)
+                        } label: {
+                            Text("Reset All Progress").foregroundStyle(.red)
+                        }
+                    }
+                }
+
+                if account.isSignedIn {
+                    Section {
+                        Button("Sign Out", role: .destructive) { confirmingSignOut = true }
+                    } footer: {
+                        Text("Your progress stays on this iPhone but stops saving to iCloud.")
+                    }
+                }
+            }
+            .navigationTitle("My Progress")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .confirmationDialog("Sign out?", isPresented: $confirmingSignOut, titleVisibility: .visible) {
+                Button("Sign Out", role: .destructive) { account.signOut() }
+            } message: {
+                Text("Your progress stays on this iPhone but stops saving to iCloud.")
+            }
+            .navigationDestination(isPresented: $debugShowsReset) {
+                ResetProgressView(target: .everything)
+            }
+            #if DEBUG
+            .task { debugShowsReset = DebugScreen.current == "reset" }
+            #endif
+        }
+    }
+}
+
+private struct QuestProgressSection: View {
+    let quest: Quest
+    @Environment(ProgressStore.self) private var progress
+
+    var body: some View {
+        Section {
+            ForEach(quest.stops) { stop in
+                let found = progress.foundDate(stop, in: quest)
+                HStack {
+                    Image(systemName: found == nil ? "circle" : "checkmark.circle.fill")
+                        .foregroundStyle(found == nil ? Color.secondary : Color.green)
+                    Text(stop.name)
+                    Spacer()
+                    if let found {
+                        Text(found.formatted(date: .abbreviated, time: .omitted))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            if progress.foundCount(in: quest) > 0 {
+                NavigationLink {
+                    ResetProgressView(target: .quest(quest))
+                } label: {
+                    Text("Reset This Quest").foregroundStyle(.red)
+                }
+            }
+        } header: {
+            Text(quest.title)
+        } footer: {
+            Text(status)
+        }
+    }
+
+    private var status: String {
+        if let finished = progress.finishedAt(quest) {
+            return "Completed \(finished.formatted(date: .long, time: .shortened))."
+        }
+        let found = progress.foundCount(in: quest)
+        return found > 0 ? "\(found) of \(quest.stops.count) stops found." : "Not started yet."
+    }
+}
+
+/// The first warning before erasing progress: a page that spells out what will be lost.
+/// Its button brings up the second warning.
+struct ResetProgressView: View {
+    enum Target: Hashable {
+        case quest(Quest)
+        case everything
+    }
+
+    let target: Target
+
+    @Environment(ProgressStore.self) private var progress
+    @Environment(AccountStore.self) private var account
+    @Environment(\.dismiss) private var dismiss
+    @State private var confirming = false
+
+    private var quests: [Quest] {
+        switch target {
+        case .quest(let quest): [quest]
+        case .everything: Quest.all
+        }
+    }
+
+    private var foundStops: [(quest: Quest, stop: Stop)] {
+        quests.flatMap { quest in
+            quest.stops.filter { progress.isFound($0, in: quest) }.map { (quest, $0) }
+        }
+    }
+
+    private var title: String {
+        switch target {
+        case .quest(let quest): "Reset \(quest.title)?"
+        case .everything: "Reset all progress?"
+        }
+    }
+
+    var body: some View {
+        List {
+            Section {
+                VStack(spacing: 12) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.orange)
+                    Text(title)
+                        .font(.title2.bold())
+                    Text("Every stop below will be locked again, and you'll have to find them all over.")
+                        .foregroundStyle(.secondary)
+                    if account.isSignedIn {
+                        Text("This also erases it from iCloud and your other devices.")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+            }
+
+            Section("What gets erased") {
+                if foundStops.isEmpty {
+                    Text("Nothing. You haven't found any stops yet.")
+                        .foregroundStyle(.secondary)
+                }
+                ForEach(foundStops, id: \.stop.id) { item in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.stop.name)
+                        if case .everything = target {
+                            Text(item.quest.title).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+
+            Section {
+                Button("Reset Progress", role: .destructive) { confirming = true }
+                    .frame(maxWidth: .infinity)
+                    .disabled(foundStops.isEmpty)
+            }
+        }
+        .navigationTitle("Reset")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("Are you sure?", isPresented: $confirming) {
+            Button("Erase Progress", role: .destructive) {
+                erase()
+                dismiss()
+            }
+            Button("Keep My Progress", role: .cancel) {}
+        } message: {
+            Text("This can't be undone.")
+        }
+    }
+
+    private func erase() {
+        switch target {
+        case .quest(let quest): progress.reset(quest)
+        case .everything: progress.resetAll()
+        }
+    }
+}
+
+#Preview {
+    MyProgressView()
+        .environment(ProgressStore())
+        .environment(AccountStore())
+}
