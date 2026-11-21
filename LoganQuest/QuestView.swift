@@ -56,11 +56,16 @@ struct QuestView: View {
 
     private var questMap: some View {
         Map(initialPosition: .region(quest.region), selection: $selectedStopID) {
-            ForEach(quest.stops) { stop in
-                let found = progress.isFound(stop, in: quest)
-                Marker(stop.name, systemImage: found ? "checkmark" : "questionmark", coordinate: stop.coordinate)
-                    .tint(found ? Color.green : Color.accentColor)
-                    .tag(stop.id)
+            ForEach(Array(quest.stops.enumerated()), id: \.element.id) { index, stop in
+                if progress.isFound(stop, in: quest) {
+                    Marker(stop.name, systemImage: "checkmark", coordinate: stop.coordinate)
+                        .tint(Color.green)
+                        .tag(stop.id)
+                } else {
+                    Marker(stop.name, systemImage: "\(index + 1).circle", coordinate: stop.coordinate)
+                        .tint(Color.accentColor)
+                        .tag(stop.id)
+                }
             }
         }
         .mapStyle(.standard(pointsOfInterest: .excludingAll))
@@ -77,11 +82,15 @@ struct QuestView: View {
             }
 
             Section {
-                ForEach(quest.stops) { stop in
+                WalkSummary(quest: quest)
+            }
+
+            Section {
+                ForEach(Array(quest.stops.enumerated()), id: \.element.id) { index, stop in
                     Button {
                         selectedStopID = stop.id
                     } label: {
-                        StopRow(stop: stop, found: progress.isFound(stop, in: quest))
+                        StopRow(stop: stop, number: index + 1, found: progress.isFound(stop, in: quest))
                     }
                     .foregroundStyle(.primary)
                 }
@@ -106,13 +115,39 @@ struct QuestView: View {
     }
 }
 
+/// How long the whole loop takes on foot.
+private struct WalkSummary: View {
+    let quest: Quest
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Image(systemName: "figure.walk")
+                .font(.title2)
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(quest.walkingTime) walk · \(quest.walkingDistance)")
+                    .font(.headline)
+                if let start = quest.stops.first {
+                    Text("Visit the stops in order and you'll end up back at \(start.name).")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 private struct StopRow: View {
     let stop: Stop
+    let number: Int
     let found: Bool
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(systemName: found ? "checkmark.circle.fill" : "lock.fill")
+            Image(systemName: found ? "checkmark.circle.fill" : "\(number).circle")
                 .font(.title2)
                 .foregroundStyle(found ? Color.green : Color.secondary)
                 .frame(width: 32)

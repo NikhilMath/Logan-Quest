@@ -4,21 +4,29 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 
 ## What's in the app
 
-- **Quests** (home screen): every quest and how far along you are. Downtown Logan is the first one; add more in `LoganQuest/Quest.swift`.
-- **A quest**: a map of its stops and the list to unlock them. Each stop has walking directions and its question.
+- **Quests** (home screen): every quest, how long it takes to walk, and how far along you are. Downtown Logan is the first one; add more in `LoganQuest/Quest.swift`.
+- **A quest**: a map of its numbered stops and the list to unlock them. Each quest is a loop: visit the stops in order and you end up back at the first one. Each stop has walking directions and its question.
+- **Downtown Logan**: Logan Tabernacle → Old Cache County Courthouse → Umbrella Alley → Ellen Eccles Theatre → Merlin Olsen Park → back to the Tabernacle. About 30 minutes (1.5 mi) on foot by Apple Maps, not counting time spent at each stop.
 - **My Progress** (person button, top right): every stop you've found and when, plus resetting. Resetting asks twice: a page that lists exactly what will be erased, then an "Are you sure?" alert.
 - **Sign in with Apple** (optional): saves progress to iCloud so it follows you to another iPhone, and puts your first name on the "Quest complete" screen. Without signing in, progress stays on that phone. There's no server: progress lives in iCloud key-value storage on the player's own Apple account.
 - **iPhone Duo and wide screens**: the map sits beside the list instead of above it. The app supports every orientation and doesn't require full screen, so it fills the Duo's inner screen.
 
 ## Before launch
 
-- **Real questions.** The three questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
+- **Real questions.** The five questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
 - **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St).
+- **Walk the loop.** The 30 minutes is Apple Maps' estimate. Time it yourself on the walk and adjust `walkingMinutes` if it's off.
 - **Rewards.** Nothing in the app mentions a reward or a business yet.
 
 ## Adding a quest
 
-Add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`. Progress is saved by quest `id` and stop `id`, so never change those once a build is out.
+Add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its stops in walking order. Progress is saved by quest `id` and stop `id`, so never change those once a build is out.
+
+To pick stops and fill in the walking time, give `Tools/walk_time.swift` the places in order. It looks each one up in Apple Maps (address and coordinates for the `Stop`), then times the loop back to the first place:
+
+```bash
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre" "Merlin Olsen Park"
+```
 
 ## Building
 

@@ -124,6 +124,9 @@ private struct QuestRow: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(quest.title).font(.headline)
                 Text(quest.summary).font(.subheadline).foregroundStyle(.secondary)
+                Text("\(Image(systemName: "figure.walk")) \(quest.walkingTime) walk · \(quest.walkingDistance)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Text(status)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(done ? Color.green : Color.secondary)
