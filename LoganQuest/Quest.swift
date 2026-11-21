@@ -19,13 +19,13 @@ struct Quest: Identifiable, Hashable {
     static func == (lhs: Quest, rhs: Quest) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
-    /// "About 30 min", rounded to the nearest 5 minutes.
+    /// "About 15 min", rounded to the nearest 5 minutes.
     var walkingTime: String {
         let rounded = max(5, Int((Double(walkingMinutes) / 5).rounded()) * 5)
         return "About \(rounded) min"
     }
 
-    /// "1.5 mi" (or kilometers where the phone uses them).
+    /// "0.8 mi" (or kilometers where the phone uses them).
     var walkingDistance: String {
         Measurement(value: walkingMeters, unit: UnitLength.meters)
             .formatted(.measurement(width: .abbreviated, usage: .road, numberFormatStyle: .number.precision(.fractionLength(1))))
@@ -66,7 +66,7 @@ extension Quest {
         id: "downtown-logan",
         title: "Downtown Logan",
         area: "Logan, Utah",
-        summary: "Five stops in a loop that starts and ends at the Logan Tabernacle.",
+        summary: "Four stops in a loop that starts and ends at the Logan Tabernacle.",
         stops: [
             Stop(
                 id: "tabernacle",
@@ -104,19 +104,10 @@ extension Quest {
                 question: "Practice question: whose name is on this theatre?",
                 acceptedAnswers: ["Ellen Eccles"]
             ),
-            Stop(
-                id: "merlin-olsen-park",
-                name: "Merlin Olsen Park",
-                address: "300 E Center St",
-                latitude: 41.73037,
-                longitude: -111.82860,
-                question: "Practice question: whose name is on this park?",
-                acceptedAnswers: ["Merlin Olsen"]
-            ),
         ],
-        // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre" "Merlin Olsen Park"
-        walkingMinutes: 32,
-        walkingMeters: 2443,
+        // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre"
+        walkingMinutes: 17,
+        walkingMeters: 1295,
         // A badge for now. Put the real prize here once one is agreed.
         prize: Prize(
             title: "Downtown Explorer",
