@@ -1,5 +1,4 @@
-"""Draws the Logan Quests app icon: LOGAN QUESTS in navy on gold, one word per line, each
-line stretched to the same width.
+"""Draws the Logan Quests app icon: LOGAN in cream over QUESTS in gold, on navy.
 
     python3 Tools/icon/make_icon.py LoganQuest/Assets.xcassets/AppIcon.appiconset/AppIcon.png
     sips -z 512 512 LoganQuest/Assets.xcassets/AppIcon.appiconset/AppIcon.png \\
@@ -18,12 +17,11 @@ W = N * SS
 FONT = "/System/Library/Fonts/SFNSRounded.ttf"
 WEIGHT = "Black"
 
-GOLD_TOP, GOLD_BOTTOM = (255, 210, 96), (232, 146, 28)
-NAVY = (17, 44, 70)
-LINES = ["LOGAN", "QUESTS"]
-WIDTH = 820     # each line is sized to fill this width
+NAVY_TOP, NAVY_BOTTOM = (22, 56, 88), (8, 26, 44)
+LINES = [("LOGAN", (251, 243, 226)), ("QUESTS", (247, 189, 52))]
+WIDTH = 830     # the wider line fills this width; both lines use the same size
 TRACK = 6       # extra space between letters
-GAP = 66        # space between the two lines' capitals
+GAP = 70        # space between the two lines' capitals
 
 
 def S(v):
@@ -49,25 +47,26 @@ def line_width(f, text):
     return sum(f.getlength(c) for c in text) + S(TRACK) * (len(text) - 1)
 
 
-def fitted_font(text):
+def fitted_size(text):
     size = 400
     while line_width(font(size), text) > S(WIDTH):
         size -= 1
-    return font(size)
+    return size
 
 
 def draw_icon():
-    img = gradient(GOLD_TOP, GOLD_BOTTOM)
+    img = gradient(NAVY_TOP, NAVY_BOTTOM)
+    f = font(min(fitted_size(text) for text, _ in LINES))
+    bb = f.getbbox("H")
+    cap = (bb[3] - bb[1]) / SS
+    top = N / 2 - (cap * len(LINES) + GAP * (len(LINES) - 1)) / 2
     d = ImageDraw.Draw(img)
-    fonts = [fitted_font(text) for text in LINES]
-    caps = [f.getbbox("H")[3] - f.getbbox("H")[1] for f in fonts]
-    top = S(N / 2) - (sum(caps) + S(GAP) * (len(LINES) - 1)) / 2
-    for text, f, cap in zip(LINES, fonts, caps):
+    for text, color in LINES:
         x = S(N / 2) - line_width(f, text) / 2
         for c in text:
-            d.text((x, top - f.getbbox("H")[1]), c, font=f, fill=NAVY)
+            d.text((x, S(top) - bb[1]), c, font=f, fill=color)
             x += f.getlength(c) + S(TRACK)
-        top += cap + S(GAP)
+        top += cap + GAP
     return img.resize((N, N), Image.LANCZOS)
 
 
