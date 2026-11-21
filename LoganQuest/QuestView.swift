@@ -9,6 +9,7 @@ struct QuestView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selectedStopID: String?
     @State private var showingComplete = false
+    @State private var showingPrize = false
     @State private var celebrateOnDismiss = false
 
     private var selectedStop: Binding<Stop?> {
@@ -46,11 +47,17 @@ struct QuestView: View {
         .fullScreenCover(isPresented: $showingComplete) {
             QuestCompleteView(quest: quest, finishedAt: progress.finishedAt(quest) ?? .now)
         }
+        .fullScreenCover(isPresented: $showingPrize) {
+            PrizeView(quest: quest)
+        }
         .onChange(of: progress.isComplete(quest)) { _, isComplete in
             if isComplete { celebrateOnDismiss = true }
         }
         #if DEBUG
-        .task { showingComplete = DebugScreen.current == "complete" }
+        .task {
+            showingComplete = DebugScreen.current == "complete"
+            showingPrize = DebugScreen.current?.hasPrefix("prize") == true
+        }
         #endif
     }
 
@@ -83,6 +90,12 @@ struct QuestView: View {
 
             Section {
                 WalkSummary(quest: quest)
+                Button {
+                    showingPrize = true
+                } label: {
+                    PrizeBoxRow(quest: quest, found: progress.foundCount(in: quest))
+                }
+                .foregroundStyle(.primary)
             }
 
             Section {
@@ -137,6 +150,35 @@ private struct WalkSummary: View {
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// The prize box: locked until every stop is found.
+private struct PrizeBoxRow: View {
+    let quest: Quest
+    let found: Int
+
+    var body: some View {
+        let unlocked = found == quest.stops.count
+        HStack(spacing: 14) {
+            PrizeBox(size: 34, isLocked: !unlocked)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(unlocked ? "Prize box unlocked!" : "Prize box")
+                    .font(.headline)
+                Text(unlocked
+                     ? "Tap to open it."
+                     : "Opens when you've found all \(quest.stops.count) stops.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
+        .contentShape(Rectangle())
     }
 }
 

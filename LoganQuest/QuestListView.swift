@@ -65,7 +65,7 @@ struct QuestListView: View {
                 //   xcrun simctl launch booted com.nikhilmath.loganquest -LQScreen myProgress
                 switch DebugScreen.current {
                 case "myProgress", "reset": showingMyProgress = true
-                case "quest", "complete": path = [Quest.all[0]]
+                case "quest", "complete", "prize", "prizeOpen": path = [Quest.all[0]]
                 default: break
                 }
             }
@@ -76,7 +76,7 @@ struct QuestListView: View {
 
 #if DEBUG
 enum DebugScreen {
-    /// myProgress, reset, quest or complete (from the -LQScreen launch argument).
+    /// myProgress, reset, quest, complete, prize or prizeOpen (from the -LQScreen launch argument).
     static var current: String? { UserDefaults.standard.string(forKey: "LQScreen") }
 }
 #endif

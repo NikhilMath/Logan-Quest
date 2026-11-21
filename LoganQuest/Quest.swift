@@ -13,6 +13,8 @@ struct Quest: Identifiable, Hashable {
     /// Measure with `Tools/walk_time.swift` whenever the stops change.
     let walkingMinutes: Int
     let walkingMeters: Double
+    /// What's in the prize box, which opens once every stop is found.
+    let prize: Prize
 
     static func == (lhs: Quest, rhs: Quest) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -44,6 +46,14 @@ struct Quest: Identifiable, Hashable {
             )
         )
     }
+}
+
+/// What's inside a quest's prize box.
+struct Prize: Hashable {
+    let title: String
+    let detail: String
+    /// An SF Symbol, drawn in gold as it rises out of the box.
+    let symbol: String
 }
 
 extension Quest {
@@ -106,6 +116,12 @@ extension Quest {
         ],
         // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre" "Merlin Olsen Park"
         walkingMinutes: 32,
-        walkingMeters: 2443
+        walkingMeters: 2443,
+        // A badge for now. Put the real prize here once one is agreed.
+        prize: Prize(
+            title: "Downtown Explorer",
+            detail: "Your badge for walking the whole downtown loop and finding every stop.",
+            symbol: "medal.fill"
+        )
     )
 }

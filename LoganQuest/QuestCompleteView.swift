@@ -7,6 +7,7 @@ struct QuestCompleteView: View {
 
     @Environment(AccountStore.self) private var account
     @Environment(\.dismiss) private var dismiss
+    @State private var showingPrize = false
 
     var body: some View {
         ZStack {
@@ -38,6 +39,22 @@ struct QuestCompleteView: View {
                 }
                 .font(.headline)
                 .padding(.top, 8)
+
+                Button {
+                    showingPrize = true
+                } label: {
+                    HStack(spacing: 12) {
+                        PrizeBox(size: 34)
+                        Text("Open your prize box")
+                            .font(.headline)
+                    }
+                    .padding(.leading, 16)
+                    .padding(.trailing, 24)
+                    .padding(.vertical, 10)
+                    .background(Capsule().fill(.white))
+                    .foregroundStyle(Color(red: 0.08, green: 0.36, blue: 0.20))
+                }
+                .padding(.top, 12)
             }
             .foregroundStyle(.white)
             .padding(32)
@@ -54,10 +71,14 @@ struct QuestCompleteView: View {
             .accessibilityLabel("Close")
             .padding()
         }
+        .fullScreenCover(isPresented: $showingPrize) {
+            PrizeView(quest: quest)
+        }
     }
 }
 
 #Preview {
     QuestCompleteView(quest: .downtownLogan, finishedAt: .now)
+        .environment(ProgressStore())
         .environment(AccountStore())
 }
