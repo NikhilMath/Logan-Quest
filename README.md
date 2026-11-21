@@ -52,4 +52,4 @@ Friends outside your developer account go in an **External Testing** group. Appl
 
 ## Icon
 
-`Tools/icon/make_icon.py` draws the icon (a stylized Old Main tower at sunset over the Cache Valley mountains, with the quest pin and trail). Rerun it after editing, then copy the result to the `Logo` image set too (`sips -z 512 512 …`), which the home screen header uses.
+`Tools/icon/make_icon.py` draws the icon: a gold trail badge with LOGAN QUESTS around the top and Old Main's tower at dusk over the Cache Valley mountains. Rerun it after editing, then copy the result to the `Logo` image set too (`sips -z 512 512 …`), which the home screen header uses. The script's docstring has both commands.

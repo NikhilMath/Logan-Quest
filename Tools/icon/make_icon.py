@@ -1,101 +1,138 @@
-import sys, math
-# Draws the app icon (stylized Old Main tower over the Cache Valley mountains).
-#   python3 Tools/icon/make_icon.py LoganQuest/Assets.xcassets/AppIcon.appiconset/AppIcon.png
-# Needs Pillow (pip install pillow).
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+"""Draws the Logan Quests app icon: a gold trail badge with LOGAN QUESTS around the top,
+three stars along the bottom, and Old Main's tower at dusk over the Cache Valley mountains.
+
+    python3 Tools/icon/make_icon.py LoganQuest/Assets.xcassets/AppIcon.appiconset/AppIcon.png
+    sips -z 512 512 LoganQuest/Assets.xcassets/AppIcon.appiconset/AppIcon.png \
+        --out LoganQuest/Assets.xcassets/Logo.imageset/Logo.png
+
+Needs Pillow (pip3 install pillow) and macOS for the SF Rounded font. Everything is drawn at
+4x and scaled down for smooth edges. Coordinates are on the final 1024 x 1024 canvas.
+"""
+import math, sys
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
+
+SS = 4
 N = 1024
-SS = 2  # draw at 2x and downsample for smooth edges
 W = N * SS
-def s(v): return v * SS
-out = sys.argv[1]
+def S(v): return int(round(v * SS))
+def P(pts): return [(S(x), S(y)) for x, y in pts]
 
-img = Image.new("RGB", (W, W))
-d = ImageDraw.Draw(img)
-# Dusk sky: deep blue-green at the top fading to teal, warm near the horizon
-stops = [(0.0, (14, 46, 74)), (0.40, (26, 100, 104)), (0.60, (226, 168, 84)), (1.0, (226, 168, 84))]
-for y in range(W):
-    t = y / (W - 1)
-    for (t0, c0), (t1, c1) in zip(stops, stops[1:]):
-        if t <= t1 or (t1, c1) == stops[-1]:
-            k = min(max((t - t0) / (t1 - t0), 0), 1)
-            col = tuple(round(a + (b - a) * k) for a, b in zip(c0, c1))
-            break
-    d.line([(0, y), (W, y)], fill=col)
+def lerp(c0, c1, k): return tuple(round(a + (b - a) * k) for a, b in zip(c0, c1))
 
-# Soft glow behind the tower top
-glow = Image.new("L", (W, W), 0)
-ImageDraw.Draw(glow).ellipse([s(300), s(120), s(724), s(544)], fill=120)
-glow = glow.filter(ImageFilter.GaussianBlur(s(60)))
-img.paste((255, 214, 130), mask=glow)
-d = ImageDraw.Draw(img)
+def vgrad(w, h, stops):
+    img = Image.new("RGB", (w, h)); d = ImageDraw.Draw(img)
+    for y in range(h):
+        t = y / (h - 1)
+        for (t0, c0), (t1, c1) in zip(stops, stops[1:]):
+            if t <= t1:
+                k = 0 if t1 == t0 else max(0, (t - t0) / (t1 - t0)); break
+        else:
+            (t0, c0), (t1, c1) = stops[-2], stops[-1]; k = 1
+        d.line([(0, y), (w, y)], fill=lerp(c0, c1, k))
+    return img
 
-# Mountains (Cache Valley's ridgelines)
-far = [(0, 700), (120, 610), (230, 650), (360, 560), (470, 620), (600, 540), (720, 600), (830, 560), (1024, 640), (1024, 1024), (0, 1024)]
-near = [(0, 790), (150, 700), (290, 760), (420, 690), (560, 770), (700, 700), (860, 760), (1024, 700), (1024, 1024), (0, 1024)]
-d.polygon([(s(x), s(y)) for x, y in far], fill=(30, 84, 86))
-d.polygon([(s(x), s(y)) for x, y in near], fill=(20, 62, 62))
+def glow(img, box, color, strength=150, blur=80):
+    m = Image.new("L", img.size, 0)
+    ImageDraw.Draw(m).ellipse([S(v) for v in box], fill=strength)
+    m = m.filter(ImageFilter.GaussianBlur(S(blur)))
+    img.paste(color, mask=m)
 
-cream = (248, 241, 226)
-shade = (222, 210, 186)
-dark = (24, 66, 70)
+def shadow(img, draw_fn, offset=(0, 18), blur=22, alpha=110, color=(0, 0, 0)):
+    m = Image.new("L", img.size, 0)
+    draw_fn(ImageDraw.Draw(m), offset, alpha)
+    m = m.filter(ImageFilter.GaussianBlur(S(blur)))
+    img.paste(color, mask=m)
 
-# Building wings
-d.rectangle([s(170), s(780), s(854), s(940)], fill=cream)
-d.polygon([(s(160), s(785)), (s(864), s(785)), (s(830), s(755)), (s(194), s(755))], fill=shade)  # roof edge
-for x in [200, 254, 308, 362] + [636, 690, 744, 798]:
-    d.rounded_rectangle([s(x), s(815), s(x + 26), s(870)], radius=s(12), fill=dark)
+def star(d, cx, cy, r, fill, points=5, inner=0.45, rot=-90):
+    pts = []
+    for i in range(points * 2):
+        rr = r if i % 2 == 0 else r * inner
+        a = math.radians(rot + i * 180 / points)
+        pts.append((cx + rr * math.cos(a), cy + rr * math.sin(a)))
+    d.polygon(P(pts), fill=fill)
 
-# Tower shaft
-tx0, tx1 = 418, 606
-d.rectangle([s(tx0), s(400), s(tx1), s(940)], fill=cream)
-# Cornice bands
-d.rectangle([s(tx0 - 14), s(390), s(tx1 + 14), s(416)], fill=shade)
-d.rectangle([s(tx0 - 8), s(560), s(tx1 + 8), s(578)], fill=shade)
-# Belfry: two tall arched openings
-for x in (452, 530):
-    d.rounded_rectangle([s(x), s(440), s(x + 42), s(545)], radius=s(21), fill=dark)
-# Lower window and door
-d.rounded_rectangle([s(487), s(610), s(537), s(700)], radius=s(25), fill=dark)
-d.rounded_rectangle([s(476), s(842), s(548), s(940)], radius=s(36), fill=dark)
-d.rectangle([s(476), s(890), s(548), s(940)], fill=dark)
+def tower(d, cx, yS, u, base, body, shade, hole, finial=None):
+    """Stylized Old Main tower. yS = top of the shaft; u = half the shaft width."""
+    # shaft (right side shaded for depth)
+    d.rectangle(P([(cx - u, yS), (cx + u, base)]), fill=body)
+    d.rectangle(P([(cx + 0.35 * u, yS), (cx + u, base)]), fill=shade)
+    # roof with shaded right face
+    ry = yS - 0.2 * u
+    apex = (cx, ry - 2.35 * u)
+    d.polygon(P([(cx - 1.18 * u, ry), (cx + 1.18 * u, ry), apex]), fill=body)
+    d.polygon(P([apex, (cx + 1.18 * u, ry), (cx, ry)]), fill=shade)
+    # corner pinnacles
+    for x, col in ((cx - 1.08 * u, body), (cx + 1.08 * u, shade)):
+        d.polygon(P([(x - 0.17 * u, ry + 0.02 * u), (x + 0.17 * u, ry + 0.02 * u), (x, ry - 0.95 * u)]), fill=col)
+    # cornice
+    d.rectangle(P([(cx - 1.2 * u, ry), (cx + 1.2 * u, yS + 0.08 * u)]), fill=body)
+    d.rectangle(P([(cx + 0.35 * u, ry), (cx + 1.2 * u, yS + 0.08 * u)]), fill=shade)
+    # belfry arches
+    for x in (cx - 0.42 * u, cx + 0.42 * u):
+        aw = 0.17 * u
+        d.rounded_rectangle(P([(x - aw, yS + 0.35 * u), (x + aw, yS + 1.6 * u)]), radius=S(aw), fill=hole)
+    # band
+    d.rectangle(P([(cx - 1.1 * u, yS + 1.9 * u), (cx + 1.1 * u, yS + 2.08 * u)]), fill=body)
+    d.rectangle(P([(cx + 0.35 * u, yS + 1.9 * u), (cx + 1.1 * u, yS + 2.08 * u)]), fill=shade)
+    # lower window
+    d.rounded_rectangle(P([(cx - 0.2 * u, yS + 2.45 * u), (cx + 0.2 * u, yS + 3.5 * u)]), radius=S(0.2 * u), fill=hole)
+    # finial
+    d.line(P([apex, (cx, apex[1] - 0.45 * u)]), fill=body, width=S(0.09 * u))
+    return (cx, apex[1] - 0.45 * u)
 
-# Steep roof with corner pinnacles
-d.polygon([(s(tx0 - 14), s(392)), (s(tx1 + 14), s(392)), (s(512), s(150))], fill=cream)
-d.polygon([(s(512), s(150)), (s(tx1 + 14), s(392)), (s(512), s(392))], fill=shade)  # shaded side
-for x in (tx0 - 6, tx1 + 6):
-    d.polygon([(s(x - 16), s(395)), (s(x + 16), s(395)), (s(x), s(300))], fill=cream)
-# Finial
-d.line([(s(512), s(150)), (s(512), s(100))], fill=cream, width=s(8))
-d.ellipse([s(500), s(88), s(524), s(112)], fill=(242, 176, 39))
+CREAM, CREAM_SHADE = (251, 243, 226), (226, 212, 186)
+GOLD = (247, 189, 52)
 
-# Ground
-d.rectangle([0, s(940), W, W], fill=(16, 52, 44))
 
-# Dotted quest trail up to the door
-for x, y in [(130, 1000), (210, 985), (290, 972), (370, 963), (445, 958)]:
-    d.ellipse([s(x - 13), s(y - 13), s(x + 13), s(y + 13)], fill=(242, 176, 39))
+def draw_icon():
+    img = vgrad(W, W, [(0, (17, 48, 74)), (1, (8, 26, 44))])
+    cx = cy = 512; R, r = 452, 350
+    shadow(img, lambda dd, off, a: dd.ellipse(P([(cx - R + off[0], cy - R + off[1]), (cx + R + off[0], cy + R + off[1])]), fill=a), offset=(0, 18), blur=24, alpha=150, color=(0, 10, 20))
+    m = Image.new("L", img.size, 0); ImageDraw.Draw(m).ellipse(P([(cx - R, cy - R), (cx + R, cy + R)]), fill=255)
+    img.paste(vgrad(W, W, [(0, (255, 208, 92)), (1, (228, 146, 30))]), mask=m)
+    d = ImageDraw.Draw(img)
+    navy = (17, 44, 70)
+    d.ellipse(P([(cx - R + 18, cy - R + 18), (cx + R - 18, cy + R - 18)]), outline=navy, width=S(7))
+    # inner scene
+    scene = vgrad(W, W, [(0, (14, 36, 66)), (0.55, (32, 104, 118)), (1, (32, 104, 118))])
+    glow(scene, (cx - 170, cy - 380, cx + 170, cy - 60), (255, 205, 120), strength=130, blur=60)
+    sd = ImageDraw.Draw(scene)
+    sd.polygon(P([(cx - r, cy + 130), (cx - 200, cy + 30), (cx - 90, cy + 100), (cx + 60, cy - 10), (cx + 200, cy + 80), (cx + r, cy + 20), (cx + r, cy + r), (cx - r, cy + r)]), fill=(20, 64, 76))
+    sd.polygon(P([(cx - r, cy + 230), (cx - 160, cy + 150), (cx + 10, cy + 210), (cx + 170, cy + 140), (cx + r, cy + 200), (cx + r, cy + r), (cx - r, cy + r)]), fill=(11, 40, 52))
+    tip = tower(sd, cx, cy - 8, 76, cy + 500, CREAM, CREAM_SHADE, (16, 40, 66))
+    star(sd, tip[0], tip[1] - 30, 38, GOLD)
+    im = Image.new("L", img.size, 0); ImageDraw.Draw(im).ellipse(P([(cx - r, cy - r), (cx + r, cy + r)]), fill=255)
+    img.paste(scene, mask=im)
+    d = ImageDraw.Draw(img)
+    d.ellipse(P([(cx - r, cy - r), (cx + r, cy + r)]), outline=navy, width=S(9))
+    # LOGAN QUESTS around the top of the ring
+    font = ImageFont.truetype("/System/Library/Fonts/SFNSRounded.ttf", S(70))
+    try: font.set_variation_by_name("Heavy")
+    except Exception: pass
+    text, radius, track = "LOGAN QUESTS", 401, S(6)
+    widths = [font.getlength(ch) + track for ch in text]
+    total = sum(widths) - track
+    theta = -math.pi / 2 - (total / S(radius)) / 2
+    for ch, w in zip(text, widths):
+        a = theta + (w / 2) / S(radius)
+        if ch != " ":
+            tile = Image.new("L", (S(120), S(120)), 0)
+            td = ImageDraw.Draw(tile)
+            bb = td.textbbox((0, 0), ch, font=font)
+            td.text((tile.width / 2 - (bb[0] + bb[2]) / 2, tile.height / 2 - (bb[1] + bb[3]) / 2), ch, font=font, fill=255)
+            tile = tile.rotate(-math.degrees(a + math.pi / 2), resample=Image.BICUBIC)
+            x = S(cx) + S(radius) * math.cos(a) - tile.width / 2
+            y = S(cy) + S(radius) * math.sin(a) - tile.height / 2
+            img.paste(navy, (int(x), int(y)), tile)
+        theta += w / S(radius)
+    # three stars along the bottom of the ring
+    for deg in (70, 90, 110):
+        a = math.radians(deg)
+        star(d, cx + 401 * math.cos(a), cy + 401 * math.sin(a), 22 if deg == 90 else 16, navy)
+    return img.resize((N, N), Image.LANCZOS)
 
-# Gold quest pin hovering to the right of the tower
-cx, cy, r = 790, 300, 92
-D = 160
-cosf = r / D; sinf = math.sqrt(1 - cosf ** 2)
-shadow = Image.new("L", (W, W), 0)
-sd = ImageDraw.Draw(shadow)
-sd.ellipse([s(cx - r), s(cy - r + 12), s(cx + r), s(cy + r + 12)], fill=110)
-sd.polygon([(s(cx - r * sinf), s(cy + r * cosf + 12)), (s(cx + r * sinf), s(cy + r * cosf + 12)), (s(cx), s(cy + D + 12))], fill=110)
-shadow = shadow.filter(ImageFilter.GaussianBlur(s(14)))
-img.paste((8, 30, 40), mask=shadow)
-d = ImageDraw.Draw(img)
-gold = (242, 176, 39)
-d.ellipse([s(cx - r), s(cy - r), s(cx + r), s(cy + r)], fill=gold)
-d.polygon([(s(cx - r * sinf), s(cy + r * cosf)), (s(cx + r * sinf), s(cy + r * cosf)), (s(cx), s(cy + D))], fill=gold)
-font = ImageFont.truetype("/System/Library/Fonts/SFNSRounded.ttf", s(128))
-try: font.set_variation_by_name("Heavy")
-except Exception: pass
-bbox = d.textbbox((0, 0), "?", font=font)
-w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-d.text((s(cx) - w / 2 - bbox[0], s(cy) - h / 2 - bbox[1]), "?", font=font, fill=(255, 255, 255))
 
-img = img.resize((N, N), Image.LANCZOS)
-img.save(out, "PNG")
-print(img.size, img.mode)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        sys.exit("usage: make_icon.py OUTPUT.png")
+    draw_icon().convert("RGB").save(sys.argv[1])
