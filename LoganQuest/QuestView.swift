@@ -57,6 +57,10 @@ struct QuestView: View {
         .task {
             showingComplete = DebugScreen.current == "complete"
             showingPrize = DebugScreen.current?.hasPrefix("prize") == true
+            if DebugScreen.current == "stop" {
+                // The first stop not found yet, so its question shows.
+                selectedStopID = (quest.stops.first { !progress.isFound($0, in: quest) } ?? quest.stops[0]).id
+            }
         }
         #endif
     }

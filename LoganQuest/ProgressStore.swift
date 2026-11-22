@@ -29,7 +29,25 @@ final class ProgressStore {
         self.local = local
         self.cloud = cloud
         records = Self.decode(local.data(forKey: Self.key))
+        #if DEBUG
+        if let count = DebugScreen.foundStops { setFoundForScreenshots(count) }
+        #endif
     }
+
+    #if DEBUG
+    /// Debug builds only (the -LQFound launch argument): the first quest's first `count` stops,
+    /// found a few minutes apart and ending now. Replaces that quest's progress.
+    private func setFoundForScreenshots(_ count: Int) {
+        guard let quest = Quest.all.first else { return }
+        let stops = quest.stops.prefix(max(count, 0))
+        var record = QuestRecord()
+        for (index, stop) in stops.enumerated() {
+            record.finds[stop.id] = Date.now.addingTimeInterval(Double(index + 1 - stops.count) * 8 * 60)
+        }
+        records[quest.id] = record
+        save()
+    }
+    #endif
 
     // MARK: Reading
 

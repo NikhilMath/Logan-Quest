@@ -158,9 +158,11 @@ xcrun simctl io "iPhone 17" screenshot /tmp/loganquest.png
 ```
 
 Debug builds can open straight to a screen: add `-LQScreen <name>` to the `launch` line, where
-`<name>` is `myProgress`, `reset`, `quest`, `complete`, `prize` or `prizeOpen` (the prize box
-opening by itself). Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
-one, in both orientations.
+`<name>` is `myProgress`, `reset`, `quest`, `stop` (the first stop not found yet), `complete`,
+`prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound <n>` to start with the
+first quest's first `n` stops found (`0` clears it; it replaces that simulator's saved progress).
+Check layout changes on the **iPhone Duo** simulator too, if this Xcode has one, in both
+orientations.
 
 On a simulator outside team `A5SDFXT5VB`, Sign in with Apple and iCloud sync may not work.
 Everything else does.
@@ -207,8 +209,12 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
   docstring (the second copies it into the `Logo` image set used by the home-screen header).
 - **Redraw the TestFlight QR code** for a different link (it checks the new image scans):
   `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/make_qr.swift <link> TestFlight/qr.png`.
-- **Before launch** (open items): real questions, checking the map pins, timing the walk, and
-  the Handles offer. The README's "Before launch" section has the details.
+- **Retake the App Store screenshots:** `Tools/screenshots.sh` (any Mac, no Apple account). It
+  saves five 1320×2868 PNGs in `AppStore/Screenshots`; Nikhil uploads them in App Store Connect →
+  Distribution → App Previews and Screenshots. Retake them whenever a pictured screen changes.
+- **Before launch** (open items): real questions, checking the map pins, timing the walk, the
+  Handles offer, then retaking the screenshots. The README's "Before launch" section has the
+  details.
 
 ## When something goes wrong
 

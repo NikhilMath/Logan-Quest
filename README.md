@@ -18,6 +18,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 - **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St).
 - **Walk the loop.** The 18 minutes is Apple Maps' estimate. Time it yourself on the walk and adjust `walkingMinutes` if it's off.
 - **The prize.** Downtown Logan's prize box holds the Handles coupon, but its offer still reads "Offer to be decided". Once the offer is agreed with Handles, put it in `offer` (and any changed `terms` or date) in the `prize` in `LoganQuest/Quest.swift`, and redraw the pitch coupon in `Partners/Handles` to match.
+- **Retake the screenshots.** Once the questions and the offer are real, run `Tools/screenshots.sh` and upload the new set (see **App Store screenshots** below).
 
 ## Adding a quest
 
@@ -37,7 +38,11 @@ Open `LoganQuest.xcodeproj` in Xcode and run. From the command line, point at th
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project LoganQuest.xcodeproj -scheme LoganQuest -destination 'generic/platform=iOS Simulator' build
 ```
 
-Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `complete`, `prize` or `prizeOpen` (the prize box opening by itself).
+Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `stop` (the first stop not found yet, showing its question), `complete`, `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound 3` to start with the first quest's first three stops found (any number; `0` clears it). This replaces the progress saved on that simulator.
+
+## App Store screenshots
+
+`Tools/screenshots.sh` takes the App Store screenshots and saves them in [`AppStore/Screenshots`](AppStore/Screenshots): the quest map, a stop's question, "Quest complete", the open prize box and the home screen, at 1320×2868 (App Store Connect's 6.9-inch iPhone size, which covers every iPhone). It builds a Debug copy and runs it on the newest "Pro Max" simulator, so it needs no Apple account. Upload them under App Store Connect → Logan Quests → Distribution → iOS App Version → App Previews and Screenshots, in order. The current set shows the practice questions and "Offer to be decided", so retake them once those are real.
 
 ## TestFlight
 
