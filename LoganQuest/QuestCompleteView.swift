@@ -3,6 +3,7 @@ import SwiftUI
 /// Shown once every stop is unlocked. The pulsing seal and ticking clock show it's live, not a screenshot.
 struct QuestCompleteView: View {
     let quest: Quest
+    let route: Route
     let finishedAt: Date
 
     @Environment(AccountStore.self) private var account
@@ -26,7 +27,7 @@ struct QuestCompleteView: View {
                 Text("Quest complete!")
                     .font(.largeTitle.bold())
 
-                Text("\(account.name ?? "You") found all \(quest.stops.count) stops on the \(quest.title) quest.")
+                Text("\(account.name ?? "You") found all \(route.stops.count) stops on the \(level)\(quest.title) quest.")
                     .font(.title3)
                     .multilineTextAlignment(.center)
 
@@ -72,13 +73,18 @@ struct QuestCompleteView: View {
             .padding()
         }
         .fullScreenCover(isPresented: $showingPrize) {
-            PrizeView(quest: quest)
+            PrizeView(quest: quest, route: route)
         }
+    }
+
+    /// "hard ", as in "the hard Downtown Logan quest", for a quest with difficulties.
+    private var level: String {
+        quest.hasDifficulties ? "\(route.difficulty.rawValue) " : ""
     }
 }
 
 #Preview {
-    QuestCompleteView(quest: .downtownLogan, finishedAt: .now)
+    QuestCompleteView(quest: .downtownLogan, route: Quest.downtownLogan.routes[0], finishedAt: .now)
         .environment(ProgressStore())
         .environment(AccountStore())
 }

@@ -78,8 +78,12 @@ struct QuestListView: View {
 enum DebugScreen {
     /// myProgress, reset, quest, stop, complete, prize or prizeOpen (from the -LQScreen launch argument).
     static var current: String? { UserDefaults.standard.string(forKey: "LQScreen") }
-    /// How many of the first quest's stops to mark found at launch (the -LQFound launch argument).
+    /// How many of the first quest's stops to mark found at launch (the -LQFound launch argument),
+    /// counted along the route for its chosen difficulty.
     static var foundStops: Int? { UserDefaults.standard.string(forKey: "LQFound").flatMap { Int($0) } }
+    /// easy, medium or hard: picks that difficulty for the first quest at launch (the -LQDifficulty
+    /// launch argument). It stays picked afterwards, as if chosen in the app.
+    static var difficulty: Difficulty? { UserDefaults.standard.string(forKey: "LQDifficulty").flatMap(Difficulty.init) }
 }
 #endif
 
@@ -115,9 +119,18 @@ private struct LogoHeader: View {
 private struct QuestRow: View {
     let quest: Quest
     @Environment(ProgressStore.self) private var progress
+    /// The difficulty picked on the quest's own screen.
+    @AppStorage private var difficulty: Difficulty
+
+    init(quest: Quest) {
+        self.quest = quest
+        _difficulty = AppStorage(wrappedValue: quest.routes[0].difficulty, quest.difficultyKey)
+    }
+
+    private var route: Route { quest.route(difficulty) }
 
     var body: some View {
-        let done = progress.isComplete(quest)
+        let done = progress.isComplete(route, in: quest)
         HStack(spacing: 14) {
             Image(systemName: done ? "checkmark.seal.fill" : "map.fill")
                 .font(.title2)
@@ -125,8 +138,8 @@ private struct QuestRow: View {
                 .frame(width: 34)
             VStack(alignment: .leading, spacing: 3) {
                 Text(quest.title).font(.headline)
-                Text(quest.summary).font(.subheadline).foregroundStyle(.secondary)
-                Text("\(Image(systemName: "figure.walk")) \(quest.walkingTime) walk · \(quest.walkingDistance)")
+                Text(route.summary).font(.subheadline).foregroundStyle(.secondary)
+                Text("\(Image(systemName: "figure.walk")) \(route.walkingTime) walk · \(route.walkingDistance)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(status)
@@ -137,12 +150,14 @@ private struct QuestRow: View {
         .padding(.vertical, 4)
     }
 
+    /// "Medium · 6 of 9 stops found"
     private var status: String {
-        if let finished = progress.finishedAt(quest) {
-            return "Completed \(finished.formatted(date: .abbreviated, time: .omitted))"
+        let level = quest.hasDifficulties ? "\(route.difficulty.title) · " : ""
+        if let finished = progress.finishedAt(route, in: quest) {
+            return level + "Completed \(finished.formatted(date: .abbreviated, time: .omitted))"
         }
-        let found = progress.foundCount(in: quest)
-        return found > 0 ? "\(found) of \(quest.stops.count) stops found" : "\(quest.stops.count) stops · Not started"
+        let found = progress.foundCount(on: route, in: quest)
+        return level + (found > 0 ? "\(found) of \(route.stops.count) stops found" : "\(route.stops.count) stops · Not started")
     }
 }
 

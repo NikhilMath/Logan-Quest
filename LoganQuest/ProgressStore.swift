@@ -43,16 +43,20 @@ final class ProgressStore {
         records = Self.merge(saved, kept)
         if records != saved || records != kept { saveOnPhone(Self.encode(records)) }
         #if DEBUG
+        if let difficulty = DebugScreen.difficulty, let quest = Quest.all.first {
+            UserDefaults.standard.set(difficulty.rawValue, forKey: quest.difficultyKey)
+        }
         if let count = DebugScreen.foundStops { setFoundForScreenshots(count) }
         #endif
     }
 
     #if DEBUG
-    /// Debug builds only (the -LQFound launch argument): the first quest's first `count` stops,
-    /// found a few minutes apart and ending now. Replaces that quest's progress.
+    /// Debug builds only (the -LQFound launch argument): the first `count` stops on the first
+    /// quest's chosen route, found a few minutes apart and ending now. Replaces that quest's progress.
     private func setFoundForScreenshots(_ count: Int) {
         guard let quest = Quest.all.first else { return }
-        let stops = quest.stops.prefix(max(count, 0))
+        let difficulty = UserDefaults.standard.string(forKey: quest.difficultyKey).flatMap(Difficulty.init)
+        let stops = quest.route(difficulty).stops.prefix(max(count, 0))
         var record = QuestRecord()
         for (index, stop) in stops.enumerated() {
             record.finds[stop.id] = Date.now.addingTimeInterval(Double(index + 1 - stops.count) * 8 * 60)
@@ -64,18 +68,22 @@ final class ProgressStore {
 
     // MARK: Reading
 
+    // Finds are saved per quest, not per route, so a stop found on one difficulty counts on all of them.
+
     func foundDate(_ stop: Stop, in quest: Quest) -> Date? { records[quest.id]?.finds[stop.id] }
     func isFound(_ stop: Stop, in quest: Quest) -> Bool { foundDate(stop, in: quest) != nil }
-    func foundCount(in quest: Quest) -> Int { quest.stops.filter { isFound($0, in: quest) }.count }
-    func isComplete(_ quest: Quest) -> Bool { foundCount(in: quest) == quest.stops.count }
+    func foundCount(on route: Route, in quest: Quest) -> Int { route.stops.filter { isFound($0, in: quest) }.count }
+    func isComplete(_ route: Route, in quest: Quest) -> Bool { foundCount(on: route, in: quest) == route.stops.count }
 
-    /// When the last stop was found, once every stop is.
-    func finishedAt(_ quest: Quest) -> Date? {
-        guard isComplete(quest) else { return nil }
-        return quest.stops.compactMap { foundDate($0, in: quest) }.max()
+    /// When the route's last stop was found, once every stop on it is.
+    func finishedAt(_ route: Route, in quest: Quest) -> Date? {
+        guard isComplete(route, in: quest) else { return nil }
+        return route.stops.compactMap { foundDate($0, in: quest) }.max()
     }
 
-    var hasAnyProgress: Bool { Quest.all.contains { foundCount(in: $0) > 0 } }
+    /// Whether any stop on any of the quest's routes has been found.
+    func hasProgress(in quest: Quest) -> Bool { quest.allStops.contains { isFound($0, in: quest) } }
+    var hasAnyProgress: Bool { Quest.all.contains(where: hasProgress) }
 
     // MARK: Changing
 

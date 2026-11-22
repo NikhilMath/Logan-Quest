@@ -5,9 +5,12 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 ## What's in the app
 
 - **Quests** (home screen): every quest, how long it takes to walk, and how far along you are. Downtown Logan is the first one; add more in `LoganQuest/Quest.swift`.
-- **A quest**: a map of its numbered stops and the list to unlock them. Each quest is a loop: visit the stops in order and you end up back at the first one. Each stop has walking directions and its question.
-- **Downtown Logan**: Logan Tabernacle → Old Cache County Courthouse → Umbrella Alley → Thatcher-Young Mansion → Ellen Eccles Theatre → back to the Tabernacle. About 20 minutes (0.9 mi) on foot by Apple Maps, not counting time spent at each stop.
-- **Prize box**: every quest has one, shown under the walking time. It stays locked until every stop is found. Then a tap sends the lid flying and the prize rises out, with spinning rays and a ticking clock so it can't be passed off as a screenshot either. The "Quest complete" screen has a button to it too. Downtown Logan's prize is a coupon to show at a business's counter. For now it's a generic one ("Your Business", "Your offer here") for pitching to Logan businesses. It's good through Dec 31, 2026 (Logan time) and turns gray and says "Expired" after that.
+- **A quest**: a map of its numbered stops and the list to unlock them. Each quest is a loop: visit the stops in order and you end up back at the first one. Each stop has walking directions and its question. A quest can come in difficulties (Easy, Medium, Hard), picked at the top of its screen. Each harder one keeps the easier one's stops and adds more, and a stop found on one difficulty counts on all of them.
+- **Downtown Logan**: three difficulties, each a loop from the Logan Tabernacle and back. Walking times are Apple Maps' estimates, not counting time spent at each stop.
+  - **Easy** (5 stops, about 20 minutes, 0.9 mi): Logan Tabernacle → Old Cache County Courthouse → Umbrella Alley → Thatcher-Young Mansion → Ellen Eccles Theatre.
+  - **Medium** (9 stops, about 30 minutes, 1.4 mi) adds St. John's Episcopal Church, the Cache Pioneer Museum, Logan Library and the Caine Lyric Theatre: Tabernacle → St. John's → Pioneer Museum → Library → Courthouse → Umbrella Alley → Caine Lyric → Thatcher-Young → Ellen Eccles.
+  - **Hard** (15 stops, about 70 minutes, 3.3 mi) adds Logan City Hall, First Presbyterian Church, the Utah Theatre, Pioneer Park, Merlin Olsen Park and the Logan Utah Temple: Tabernacle → Pioneer Museum → Courthouse → Library → City Hall → First Presbyterian → Umbrella Alley → Caine Lyric → Utah Theatre → Thatcher-Young → Ellen Eccles → Pioneer Park → Merlin Olsen Park → Temple → St. John's.
+- **Prize box**: every quest has one, shown under the walking time. It stays locked until every stop on the chosen difficulty is found. Then a tap sends the lid flying and the prize rises out, with spinning rays and a ticking clock so it can't be passed off as a screenshot either. The "Quest complete" screen has a button to it too. Downtown Logan's prize is a coupon to show at a business's counter, the same on every difficulty. For now it's a generic one ("Your Business", "Your offer here") for pitching to Logan businesses. It's good through Dec 31, 2026 (Logan time) and turns gray and says "Expired" after that.
 - **My Progress** (person button, top right): every stop you've found and when, plus resetting. Resetting asks twice: a page that lists exactly what will be erased, then an "Are you sure?" alert.
 - **Sign in with Apple** (optional): saves progress to iCloud so it follows you to another iPhone, and puts your first name on the "Quest complete" screen. Without signing in, progress stays on that phone. There's no server: progress lives in iCloud key-value storage on the player's own Apple account.
 - **Deleting the app** and downloading it again keeps everything: progress and the sign-in are also saved in the phone's keychain, which iOS keeps when an app is deleted.
@@ -15,15 +18,15 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 
 ## Before launch
 
-- **Real questions.** The five questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
-- **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St).
-- **Walk the loop.** The 18 minutes is Apple Maps' estimate. Time it yourself on the walk and adjust `walkingMinutes` if it's off.
+- **Real questions.** All 15 questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
+- **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St). Apple Maps has no street address for Pioneer Park, so its stop says "Pioneer Park Walkway".
+- **Walk the loops.** The 18, 30 and 72 minutes are Apple Maps' estimates. Time each difficulty yourself and adjust its route's `walkingMinutes` if it's off.
 - **The prize.** Downtown Logan's prize box holds a generic coupon that reads "Your Business" and "Your offer here". Once a business signs on, put its name in `business` and the agreed offer in `offer` (and any changed `terms` or date, plus the prize's `title` and `detail`) in the `prize` in `LoganQuest/Quest.swift`, then make the same changes in `Partners/make_coupon.py` and redraw the pitch coupon to match.
 - **Retake the screenshots.** Once the questions and the offer are real, run `Tools/screenshots.sh` and upload the new set (see **App Store screenshots** below).
 
 ## Adding a quest
 
-Add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its stops in walking order and a `prize` for its prize box: a badge (`.badge(symbol:)`, an SF Symbol) or a business's coupon (`.coupon(…)`). Progress is saved by quest `id` and stop `id`, so never change those once a build is out.
+Add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with one or more `routes` and a `prize` for its prize box: a badge (`.badge(symbol:)`, an SF Symbol) or a business's coupon (`.coupon(…)`). Each route is a difficulty with its stops in walking order; give a quest just one route and it has no difficulty picker. Define each stop once (like Downtown Logan's, in the `Stop` extension at the bottom of the file) and list it in every route that visits it, so a find counts on each. Progress is saved by quest `id` and stop `id`, so never change those once a build is out.
 
 To pick stops and fill in the walking time, give `Tools/walk_time.swift` the places in order. It looks each one up in Apple Maps (address and coordinates for the `Stop`), then times the loop back to the first place:
 
@@ -39,7 +42,7 @@ Open `LoganQuest.xcodeproj` in Xcode and run. From the command line, point at th
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project LoganQuest.xcodeproj -scheme LoganQuest -destination 'generic/platform=iOS Simulator' build
 ```
 
-Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `stop` (the first stop not found yet, showing its question), `complete`, `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound 3` to start with the first quest's first three stops found (any number; `0` clears it). This replaces the progress saved on that simulator. Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps them), so use `-LQFound 0` and Sign Out instead.
+Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `stop` (the first stop not found yet, showing its question), `complete`, `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound 3` to start with the first quest's first three stops found (any number; `0` clears it), counted along the chosen difficulty's route. This replaces the progress saved on that simulator. Add `-LQDifficulty medium` (or `easy`, `hard`) to pick that difficulty first; it stays picked afterwards. Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps them), so use `-LQFound 0` and Sign Out instead.
 
 ## App Store screenshots
 

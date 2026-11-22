@@ -4,6 +4,7 @@ import SwiftUI
 /// flying and the prize rises out. The spinning rays and ticking clock show it's live, not a screenshot.
 struct PrizeView: View {
     let quest: Quest
+    let route: Route
 
     @Environment(ProgressStore.self) private var progress
     @Environment(AccountStore.self) private var account
@@ -15,7 +16,7 @@ struct PrizeView: View {
     private let boxSize: CGFloat = 200
 
     var body: some View {
-        let unlocked = progress.isComplete(quest)
+        let unlocked = progress.isComplete(route, in: quest)
         ZStack {
             LinearGradient(colors: [.questNavy, .questNavyDark], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
@@ -26,7 +27,7 @@ struct PrizeView: View {
                     VStack(spacing: 28) {
                         stage(unlocked: unlocked, width: geometry.size.width - 40)
                         caption(unlocked: unlocked)
-                        if let finished = progress.finishedAt(quest) {
+                        if let finished = progress.finishedAt(route, in: quest) {
                             proof(finishedAt: finished)
                                 .padding(.top, 12)
                         }
@@ -159,7 +160,7 @@ struct PrizeView: View {
                 Text("Tap the box to open it.")
                     .font(.title3)
             } else {
-                let left = quest.stops.count - progress.foundCount(in: quest)
+                let left = route.stops.count - progress.foundCount(on: route, in: quest)
                 Text("Prize box")
                     .font(.largeTitle.bold())
                 Text("Find ^[\(left) more stop](inflect: true) to open it.")
@@ -172,7 +173,7 @@ struct PrizeView: View {
 
     private func proof(finishedAt: Date) -> some View {
         VStack(spacing: 4) {
-            Text("\(account.name ?? "You") finished \(quest.title)")
+            Text("\(account.name ?? "You") finished \(quest.title)\(quest.hasDifficulties ? " on \(route.difficulty.title)" : "")")
             Text(finishedAt.formatted(date: .abbreviated, time: .shortened))
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text("It's \(context.date.formatted(date: .omitted, time: .standard))")
@@ -314,7 +315,7 @@ extension Color {
 }
 
 #Preview {
-    PrizeView(quest: .downtownLogan)
+    PrizeView(quest: .downtownLogan, route: Quest.downtownLogan.routes[0])
         .environment(ProgressStore())
         .environment(AccountStore())
 }

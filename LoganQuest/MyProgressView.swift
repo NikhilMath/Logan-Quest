@@ -75,12 +75,17 @@ private struct QuestProgressSection: View {
 
     var body: some View {
         Section {
-            ForEach(quest.stops) { stop in
+            ForEach(quest.allStops) { stop in
                 let found = progress.foundDate(stop, in: quest)
                 HStack {
                     Image(systemName: found == nil ? "circle" : "checkmark.circle.fill")
                         .foregroundStyle(found == nil ? Color.secondary : Color.green)
-                    Text(stop.name)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(stop.name)
+                        if let only = onlyOn(stop) {
+                            Text(only).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
                     Spacer()
                     if let found {
                         Text(found.formatted(date: .abbreviated, time: .omitted))
@@ -88,7 +93,7 @@ private struct QuestProgressSection: View {
                     }
                 }
             }
-            if progress.foundCount(in: quest) > 0 {
+            if progress.hasProgress(in: quest) {
                 NavigationLink {
                     ResetProgressView(target: .quest(quest))
                 } label: {
@@ -102,12 +107,24 @@ private struct QuestProgressSection: View {
         }
     }
 
+    /// One line per difficulty: "Medium: 6 of 9 stops found."
     private var status: String {
-        if let finished = progress.finishedAt(quest) {
-            return "Completed \(finished.formatted(date: .long, time: .shortened))."
+        quest.routes.map { route in
+            let level = quest.hasDifficulties ? "\(route.difficulty.title): " : ""
+            if let finished = progress.finishedAt(route, in: quest) {
+                return level + "Completed \(finished.formatted(date: .long, time: .shortened))."
+            }
+            let found = progress.foundCount(on: route, in: quest)
+            return level + (found > 0 ? "\(found) of \(route.stops.count) stops found." : "Not started yet.")
         }
-        let found = progress.foundCount(in: quest)
-        return found > 0 ? "\(found) of \(quest.stops.count) stops found." : "Not started yet."
+        .joined(separator: "\n")
+    }
+
+    /// "Medium and Hard", for a stop that isn't on every difficulty's route.
+    private func onlyOn(_ stop: Stop) -> String? {
+        let difficulties = quest.difficulties(with: stop)
+        guard difficulties.count < quest.routes.count else { return nil }
+        return difficulties.map(\.title).formatted(.list(type: .and))
     }
 }
 
@@ -135,7 +152,7 @@ struct ResetProgressView: View {
 
     private var foundStops: [(quest: Quest, stop: Stop)] {
         quests.flatMap { quest in
-            quest.stops.filter { progress.isFound($0, in: quest) }.map { (quest, $0) }
+            quest.allStops.filter { progress.isFound($0, in: quest) }.map { (quest, $0) }
         }
     }
 

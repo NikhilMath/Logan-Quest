@@ -50,10 +50,11 @@ rm -f "$OUT"/*.png
 
 # shot <file name> <stops found> <seconds to wait> [screen]
 # The screen is one of the app's -LQScreen debug screens; none means the home screen.
+# Always Easy, so a difficulty picked earlier on this simulator doesn't change the pictures.
 shot() {
   local file=$1 found=$2 wait=$3 screen=${4:-}
   xcrun simctl launch --terminate-running-process "$udid" "$BUNDLE" \
-    -LQFound "$found" ${screen:+-LQScreen "$screen"} >/dev/null
+    -LQDifficulty easy -LQFound "$found" ${screen:+-LQScreen "$screen"} >/dev/null
   sleep "$wait"
   xcrun simctl io "$udid" screenshot --type=png "$OUT/$file.png" >/dev/null 2>&1
   echo "  $OUT/$file.png"

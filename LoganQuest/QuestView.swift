@@ -1,20 +1,31 @@
 import MapKit
 import SwiftUI
 
-/// One quest: the map of its stops and the list to unlock them.
+/// One quest: the difficulty picker, the map of its stops and the list to unlock them.
 struct QuestView: View {
     let quest: Quest
 
     @Environment(ProgressStore.self) private var progress
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @AppStorage private var difficulty: Difficulty
+    @State private var mapPosition: MapCameraPosition
     @State private var selectedStopID: String?
     @State private var showingComplete = false
     @State private var showingPrize = false
     @State private var celebrateOnDismiss = false
 
+    init(quest: Quest) {
+        self.quest = quest
+        let difficulty = AppStorage(wrappedValue: quest.routes[0].difficulty, quest.difficultyKey)
+        _difficulty = difficulty
+        _mapPosition = State(initialValue: .region(quest.route(difficulty.wrappedValue).region))
+    }
+
+    private var route: Route { quest.route(difficulty) }
+
     private var selectedStop: Binding<Stop?> {
         Binding(
-            get: { quest.stops.first { $0.id == selectedStopID } },
+            get: { route.stops.first { $0.id == selectedStopID } },
             set: { selectedStopID = $0?.id }
         )
     }
@@ -45,13 +56,17 @@ struct QuestView: View {
             StopView(stop: stop, quest: quest)
         }
         .fullScreenCover(isPresented: $showingComplete) {
-            QuestCompleteView(quest: quest, finishedAt: progress.finishedAt(quest) ?? .now)
+            QuestCompleteView(quest: quest, route: route, finishedAt: progress.finishedAt(route, in: quest) ?? .now)
         }
         .fullScreenCover(isPresented: $showingPrize) {
-            PrizeView(quest: quest)
+            PrizeView(quest: quest, route: route)
         }
-        .onChange(of: progress.isComplete(quest)) { _, isComplete in
-            if isComplete { celebrateOnDismiss = true }
+        .onChange(of: progress.isComplete(route, in: quest)) { _, isComplete in
+            // Only when a stop just unlocked, not when switching to a difficulty that's already done.
+            if isComplete && selectedStopID != nil { celebrateOnDismiss = true }
+        }
+        .onChange(of: difficulty) {
+            withAnimation { mapPosition = .region(route.region) }
         }
         #if DEBUG
         .task {
@@ -59,15 +74,15 @@ struct QuestView: View {
             showingPrize = DebugScreen.current?.hasPrefix("prize") == true
             if DebugScreen.current == "stop" {
                 // The first stop not found yet, so its question shows.
-                selectedStopID = (quest.stops.first { !progress.isFound($0, in: quest) } ?? quest.stops[0]).id
+                selectedStopID = (route.stops.first { !progress.isFound($0, in: quest) } ?? route.stops[0]).id
             }
         }
         #endif
     }
 
     private var questMap: some View {
-        Map(initialPosition: .region(quest.region), selection: $selectedStopID) {
-            ForEach(Array(quest.stops.enumerated()), id: \.element.id) { index, stop in
+        Map(position: $mapPosition, selection: $selectedStopID) {
+            ForEach(Array(route.stops.enumerated()), id: \.element.id) { index, stop in
                 if progress.isFound(stop, in: quest) {
                     Marker(stop.name, systemImage: "checkmark", coordinate: stop.coordinate)
                         .tint(Color.green)
@@ -84,6 +99,21 @@ struct QuestView: View {
 
     private func stopList(showsMap: Bool) -> some View {
         List {
+            if quest.hasDifficulties {
+                Section {
+                    Picker("Difficulty", selection: $difficulty) {
+                        ForEach(quest.routes) { route in
+                            Text(route.difficulty.title).tag(route.difficulty)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                } footer: {
+                    Text(difficultyFooter)
+                }
+            }
+
             if showsMap {
                 Section {
                     questMap
@@ -93,17 +123,17 @@ struct QuestView: View {
             }
 
             Section {
-                WalkSummary(quest: quest)
+                WalkSummary(route: route)
                 Button {
                     showingPrize = true
                 } label: {
-                    PrizeBoxRow(quest: quest, found: progress.foundCount(in: quest))
+                    PrizeBoxRow(route: route, found: progress.foundCount(on: route, in: quest))
                 }
                 .foregroundStyle(.primary)
             }
 
             Section {
-                ForEach(Array(quest.stops.enumerated()), id: \.element.id) { index, stop in
+                ForEach(Array(route.stops.enumerated()), id: \.element.id) { index, stop in
                     Button {
                         selectedStopID = stop.id
                     } label: {
@@ -112,14 +142,14 @@ struct QuestView: View {
                     .foregroundStyle(.primary)
                 }
             } header: {
-                Text("\(progress.foundCount(in: quest)) of \(quest.stops.count) stops found")
+                Text("\(progress.foundCount(on: route, in: quest)) of \(route.stops.count) stops found")
             } footer: {
-                if !progress.isComplete(quest) {
+                if !progress.isComplete(route, in: quest) {
                     Text("Walk to each stop and answer its question to unlock it.")
                 }
             }
 
-            if progress.isComplete(quest) {
+            if progress.isComplete(route, in: quest) {
                 Section {
                     Button {
                         showingComplete = true
@@ -130,11 +160,19 @@ struct QuestView: View {
             }
         }
     }
+
+    /// "Easy has 5 stops, Medium 9 and Hard 15. A stop you find counts on every difficulty."
+    private var difficultyFooter: String {
+        let counts = quest.routes.enumerated().map { index, route in
+            index == 0 ? "\(route.difficulty.title) has \(route.stops.count) stops" : "\(route.difficulty.title) \(route.stops.count)"
+        }
+        return "\(counts.formatted(.list(type: .and))). A stop you find counts on every difficulty."
+    }
 }
 
 /// How long the whole loop takes on foot.
 private struct WalkSummary: View {
-    let quest: Quest
+    let route: Route
 
     var body: some View {
         HStack(spacing: 14) {
@@ -143,9 +181,9 @@ private struct WalkSummary: View {
                 .foregroundStyle(Color.accentColor)
                 .frame(width: 32)
             VStack(alignment: .leading, spacing: 2) {
-                Text("\(quest.walkingTime) walk · \(quest.walkingDistance)")
+                Text("\(route.walkingTime) walk · \(route.walkingDistance)")
                     .font(.headline)
-                if let start = quest.stops.first {
+                if let start = route.stops.first {
                     Text("Visit the stops in order and you'll end up back at \(start.name).")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -157,13 +195,13 @@ private struct WalkSummary: View {
     }
 }
 
-/// The prize box: locked until every stop is found.
+/// The prize box: locked until every stop on the route is found.
 private struct PrizeBoxRow: View {
-    let quest: Quest
+    let route: Route
     let found: Int
 
     var body: some View {
-        let unlocked = found == quest.stops.count
+        let unlocked = found == route.stops.count
         HStack(spacing: 14) {
             PrizeBox(size: 34, isLocked: !unlocked)
                 .frame(width: 32)
@@ -172,7 +210,7 @@ private struct PrizeBoxRow: View {
                     .font(.headline)
                 Text(unlocked
                      ? "Tap to open it."
-                     : "Opens when you've found all \(quest.stops.count) stops.")
+                     : "Opens when you've found all \(route.stops.count) stops.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

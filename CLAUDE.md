@@ -167,8 +167,10 @@ Debug builds can open straight to a screen: add `-LQScreen <name>` to the `launc
 `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound <n>` to start with the
 first quest's first `n` stops found (`0` clears it; it replaces that simulator's saved progress).
 Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps
-them): use `-LQFound 0` and the Sign Out button instead. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has one, in both
-orientations.
+them): use `-LQFound 0` and the Sign Out button instead. Add `-LQDifficulty easy`, `medium` or
+`hard` to pick Downtown Logan's difficulty first (it stays picked); `-LQFound` counts along that
+difficulty's route. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
+one, in both orientations.
 
 On a simulator outside team `A5SDFXT5VB`, Sign in with Apple and iCloud sync may not work.
 Everything else does.
@@ -196,10 +198,13 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
 ## Everyday tasks
 
-- **Add a quest:** add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its stops in
-  walking order and a `prize`: a badge (`.badge(symbol:)`, an SF Symbol) or a business's coupon
-  (`.coupon(…)`). Only add a coupon for a business Nikhil has said yes to. To get each stop's
-  address and coordinates and the loop's walking time from Apple Maps:
+- **Add a quest:** add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its `routes`
+  and a `prize`: a badge (`.badge(symbol:)`, an SF Symbol) or a business's coupon
+  (`.coupon(…)`). Only add a coupon for a business Nikhil has said yes to. Each route is a
+  difficulty (easy, medium, hard) with its stops in walking order; one route means no difficulty
+  picker. Routes share `Stop` values, so a stop found on one difficulty counts on the others.
+  Downtown Logan has all three: Medium is Easy plus 4 stops, Hard is Medium plus 6. To get each
+  stop's address and coordinates and a loop's walking time from Apple Maps:
 
   ```bash
   DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
@@ -238,6 +243,9 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 - **Push fails with 403 or "Permission denied":** `gh auth setup-git` wasn't run, or the
   GitHub account signed in isn't a collaborator. Check `gh api user --jq .login`: on Forrest's
   Mac it should print `fso5`. Anyone else needs Nikhil to add them (setup step 6).
+- **The simulator shows an older build than the code:** another Claude Code worktree on this Mac
+  built into the same `/tmp/LoganQuest-DD`. Build with your own `-derivedDataPath`, like
+  `/tmp/LoganQuest-DD-<worktree name>`, and install from there.
 - **Push rejected as "non-fast-forward" or "fetch first":** someone else pushed.
   `git pull --rebase origin main`, build, push again. Never force-push.
 - **No build on TestFlight 30+ minutes after a push:** check App Store Connect → Xcode Cloud →
