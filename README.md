@@ -51,7 +51,7 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
 To add someone else on the developer team, open App Store Connect → Logan Quests → TestFlight → **Me** → Testers → **+**.
 
-Friends outside your developer account go in an **External Testing** group. Apple reviews the first build sent to external testers.
+**Public link for everyone else:** https://testflight.apple.com/join/ynz9DXQa, or scan [`TestFlight/qr.png`](TestFlight/qr.png). It joins the external group **Public** (open to anyone, no tester limit). Testers can install only once a build in **Public** has passed Beta App Review. Xcode Cloud builds are internal-only, so builds reach **Public** only when uploaded with `Tools/release.sh` and added to the group (App Store Connect → TestFlight → Public → Builds → **+**). The answers to the review questions are under TestFlight → Test Information. To redraw the QR code for a different link, run `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/make_qr.swift <link> TestFlight/qr.png`. It checks that the new image scans.
 
 ## Partners
 
