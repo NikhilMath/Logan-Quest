@@ -19,13 +19,13 @@ struct Quest: Identifiable, Hashable {
     static func == (lhs: Quest, rhs: Quest) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
-    /// "About 15 min", rounded to the nearest 5 minutes.
+    /// "About 20 min", rounded to the nearest 5 minutes.
     var walkingTime: String {
         let rounded = max(5, Int((Double(walkingMinutes) / 5).rounded()) * 5)
         return "About \(rounded) min"
     }
 
-    /// "0.8 mi" (or kilometers where the phone uses them).
+    /// "0.9 mi" (or kilometers where the phone uses them).
     var walkingDistance: String {
         Measurement(value: walkingMeters, unit: UnitLength.meters)
             .formatted(.measurement(width: .abbreviated, usage: .road, numberFormatStyle: .number.precision(.fractionLength(1))))
@@ -109,7 +109,7 @@ extension Quest {
         id: "downtown-logan",
         title: "Downtown Logan",
         area: "Logan, Utah",
-        summary: "Four stops in a loop that starts and ends at the Logan Tabernacle.",
+        summary: "Five stops in a loop that starts and ends at the Logan Tabernacle.",
         stops: [
             Stop(
                 id: "tabernacle",
@@ -139,6 +139,15 @@ extension Quest {
                 acceptedAnswers: ["Umbrellas", "Umbrella"]
             ),
             Stop(
+                id: "thatcher-young",
+                name: "Thatcher-Young Mansion",
+                address: "35 W 100 S",
+                latitude: 41.73039,
+                longitude: -111.83597,
+                question: "Practice question: what's this house called?",
+                acceptedAnswers: ["Thatcher-Young Mansion", "Thatcher-Young"]
+            ),
+            Stop(
                 id: "ellen-eccles",
                 name: "Ellen Eccles Theatre",
                 address: "43 S Main St",
@@ -148,9 +157,9 @@ extension Quest {
                 acceptedAnswers: ["Ellen Eccles"]
             ),
         ],
-        // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre"
-        walkingMinutes: 17,
-        walkingMeters: 1295,
+        // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+        walkingMinutes: 18,
+        walkingMeters: 1412,
         // Handles is open to a finisher reward, but the offer isn't agreed yet.
         // Fill in `offer` (and `terms`, if they change) once it is. The pitch coupon in
         // Partners/Handles shows the same thing, so keep the two matching.
