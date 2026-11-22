@@ -41,9 +41,11 @@ Debug builds can open straight to a screen for screenshots: launch with `-LQScre
 
 ## TestFlight
 
-The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`). Its internal TestFlight group **Me** has automatic distribution on, so every uploaded build reaches the group once Apple finishes processing it (5–15 minutes).
+The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
-**To upload a build:** run `Tools/release.sh`. It archives, signs with the Apple account signed in to Xcode, and uploads. Xcode picks the next build number.
+**Every push to `main` ships a TestFlight build.** Xcode Cloud's **Default** workflow archives `main` on each push and sends the build to the internal TestFlight group **Me**, usually 15–30 minutes after the push. If another push lands while a build is running, the older build is cancelled. Xcode Cloud numbers the builds itself, starting at 10 (after the five builds uploaded by hand); change that under App Store Connect → Xcode Cloud → Settings → Build Number. Edit the workflow under App Store Connect → Xcode Cloud → Manage Workflows, or in Xcode with Integrate → Manage Workflows.
+
+**To upload by hand instead:** run `Tools/release.sh`. It archives, signs with the Apple account signed in to Xcode, and uploads. Xcode picks the next build number.
 
 **Getting it on your iPhone:** install **TestFlight** from the App Store, sign in with the same Apple Account as the developer account, and tap **Install** next to Logan Quests. TestFlight offers each new build as it arrives.
 
