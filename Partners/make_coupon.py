@@ -1,8 +1,11 @@
-"""Draws the Handles coupon mockup in Logan Quests navy, gold and cream.
+"""Draws the generic coupon mockup for pitching Logan businesses, in Logan Quests navy, gold
+and cream.
 
-    python3 Partners/Handles/make_coupon.py Partners/Handles/coupon.png
+    python3 Partners/make_coupon.py Partners/coupon.png
 
-The offer is a placeholder until it's agreed with Handles. Needs Pillow (pip3 install pillow)
+It matches the prize-box coupon in the app (the `prize` in LoganQuest/Quest.swift), so change
+both together. "Your Business" and "Your offer here" stay until a business signs on with an
+agreed offer. Needs Pillow (pip3 install pillow)
 and macOS for the SF Rounded font. Drawn at 3x and scaled down for smooth edges; coordinates
 are on the final 2000 x 1000 canvas.
 """
@@ -19,6 +22,7 @@ GOLD, GOLD_LIGHT, GOLD_DARK = (247, 189, 52), (255, 216, 110), (214, 148, 22)
 CREAM = (251, 243, 226)
 STUB = 560          # width of the left stub
 NOTCH = 46          # radius of the perforation notches
+BUSINESS_BASELINE = 383
 
 def font(size, weight="Black"):
     f = ImageFont.truetype(ROUNDED, S(size))
@@ -89,7 +93,11 @@ def draw():
     # Main side
     x0 = STUB + 90
     tracked(d, (S(x0), S(110)), "LOGAN QUESTS", font(34, "Heavy"), GOLD, 5)
-    d.text((S(x0 - 8), S(160)), "Handles", font=font(230), fill=CREAM)
+    # The business, as big as fits (up to 230) on a fixed baseline.
+    business, size = "Your Business", 230
+    while font(size).getlength(business) > S(W - 110 - (x0 - 8)):
+        size -= 2
+    d.text((S(x0 - 8), S(BUSINESS_BASELINE)), business, font=font(size), fill=CREAM, anchor="ls")
 
     # Offer (placeholder) in a dashed gold box
     ox0, oy0, ox1, oy1 = x0, 470, W - 110, 640
@@ -107,7 +115,7 @@ def draw():
     for (ax, ay, start) in [(ox0, oy0, 180), (ox1 - 2 * r, oy0, 270), (ox1 - 2 * r, oy1 - 2 * r, 0), (ox0, oy1 - 2 * r, 90)]:
         d.arc([S(ax), S(ay), S(ax + 2 * r), S(ay + 2 * r)], start, start + 90, fill=GOLD, width=S(4))
     f = font(84)
-    offer = "Offer to be decided"
+    offer = "Your offer here"
     bb = f.getbbox(offer)
     d.text((S(ox0 + 50), S((oy0 + oy1) / 2) - (bb[1] + bb[3]) / 2), offer, font=f, fill=GOLD_LIGHT)
 

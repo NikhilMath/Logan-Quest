@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A prize-box coupon, drawn like the pitch coupon in Partners/Handles: a navy ticket with a
+/// A prize-box coupon, drawn like the pitch coupon in Partners: a navy ticket with a
 /// gift-box stub, the business, the offer, and when it runs out. Everything scales with `width`.
 struct CouponView: View {
     let coupon: Coupon

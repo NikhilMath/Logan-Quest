@@ -160,15 +160,15 @@ extension Quest {
         // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
         walkingMinutes: 18,
         walkingMeters: 1412,
-        // Handles is open to a finisher reward, but the offer isn't agreed yet.
-        // Fill in `offer` (and `terms`, if they change) once it is. The pitch coupon in
-        // Partners/Handles shows the same thing, so keep the two matching.
+        // A generic coupon for pitching to Logan businesses. Once one signs on, put in its
+        // name and the agreed offer (and `terms`, if they change). The pitch coupon in
+        // Partners shows the same thing, so keep the two matching.
         prize: Prize(
-            title: "Handles coupon",
-            detail: "Show this screen at the counter at Handles. The ticking clock shows it's not a screenshot.",
+            title: "Local business coupon",
+            detail: "Show this screen at the counter. The ticking clock shows it's not a screenshot.",
             item: .coupon(Coupon(
-                business: "Handles",
-                offer: "Offer to be decided",
+                business: "Your Business",
+                offer: "Your offer here",
                 terms: "One per player",
                 goodThrough: DateComponents(year: 2026, month: 12, day: 31)
             ))

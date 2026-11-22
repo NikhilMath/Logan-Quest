@@ -45,10 +45,12 @@ something that doesn't build.
   never rename one that has shipped.
 - The current questions are practice placeholders. Don't invent "real" ones (plaque wording
   and so on). Nikhil collects those on foot.
-- Downtown Logan's prize box holds a Handles coupon (Nikhil asked for it in the app on
-  2026-11-21), but the offer still reads "Offer to be decided". Don't fill in an offer or terms
-  until Nikhil gives the agreed ones, and don't add other businesses or rewards unasked. The
-  pitch coupon (`Partners/Handles`) and `CouponView` show the same thing: keep them matching.
+- Downtown Logan's prize box holds a generic coupon that reads "Your Business" and "Your offer
+  here", so Nikhil can pitch it to more than one Logan business (he asked for this on
+  2026-11-21, replacing the Handles coupon). Don't put in a business's name, offer or terms
+  until Nikhil says which business signed on and what was agreed, and don't add rewards unasked.
+  The pitch coupon (`Partners/coupon.png`) and `CouponView` show the same thing: keep them
+  matching.
 - Progress: `ProgressStore` (UserDefaults, plus iCloud key-value storage while signed in with
   Apple). Resets are timestamps so they win over stale copies on other devices. Keep
   `ProgressStore.merge` symmetric.
@@ -202,9 +204,11 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 - **Change a stop's question or answers:** edit it in `Quest.swift`. List every spelling to
   accept in `acceptedAnswers`. Matching already ignores case, punctuation, accents and a leading
   "the". Only put in real questions that Nikhil (or whoever walked there) gave you.
-- **Change the Handles offer** (only with the agreed wording from Nikhil): set `offer`, and any
-  new `terms` or `lastDay`, in the `prize` in `Quest.swift`, then redraw the pitch coupon to
-  match: `python3 Partners/Handles/make_coupon.py Partners/Handles/coupon.png`.
+- **Put a business on the coupon** (only once Nikhil says who signed on and gives the agreed
+  wording): set `business` and `offer`, and any new `terms` or `lastDay`, in the `prize` in
+  `Quest.swift` (and its `title` and `detail`), make the same changes in
+  `Partners/make_coupon.py`, then redraw the pitch coupon:
+  `python3 Partners/make_coupon.py Partners/coupon.png`.
 - **Redraw the icon:** edit `Tools/icon/make_icon.py`, then run the two commands in its
   docstring (the second copies it into the `Logo` image set used by the home-screen header).
 - **Redraw the TestFlight QR code** for a different link (it checks the new image scans):
@@ -212,8 +216,8 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 - **Retake the App Store screenshots:** `Tools/screenshots.sh` (any Mac, no Apple account). It
   saves five 1320×2868 PNGs in `AppStore/Screenshots`; Nikhil uploads them in App Store Connect →
   Distribution → App Previews and Screenshots. Retake them whenever a pictured screen changes.
-- **Before launch** (open items): real questions, checking the map pins, timing the walk, the
-  Handles offer, then retaking the screenshots. The README's "Before launch" section has the
+- **Before launch** (open items): real questions, checking the map pins, timing the walk, a
+  business and offer for the coupon, then retaking the screenshots. The README's "Before launch" section has the
   details.
 
 ## When something goes wrong

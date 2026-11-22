@@ -7,7 +7,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 - **Quests** (home screen): every quest, how long it takes to walk, and how far along you are. Downtown Logan is the first one; add more in `LoganQuest/Quest.swift`.
 - **A quest**: a map of its numbered stops and the list to unlock them. Each quest is a loop: visit the stops in order and you end up back at the first one. Each stop has walking directions and its question.
 - **Downtown Logan**: Logan Tabernacle → Old Cache County Courthouse → Umbrella Alley → Thatcher-Young Mansion → Ellen Eccles Theatre → back to the Tabernacle. About 20 minutes (0.9 mi) on foot by Apple Maps, not counting time spent at each stop.
-- **Prize box**: every quest has one, shown under the walking time. It stays locked until every stop is found. Then a tap sends the lid flying and the prize rises out, with spinning rays and a ticking clock so it can't be passed off as a screenshot either. The "Quest complete" screen has a button to it too. Downtown Logan's prize is a Handles coupon to show at the counter. It's good through Dec 31, 2026 (Logan time) and turns gray and says "Expired" after that.
+- **Prize box**: every quest has one, shown under the walking time. It stays locked until every stop is found. Then a tap sends the lid flying and the prize rises out, with spinning rays and a ticking clock so it can't be passed off as a screenshot either. The "Quest complete" screen has a button to it too. Downtown Logan's prize is a coupon to show at a business's counter. For now it's a generic one ("Your Business", "Your offer here") for pitching to Logan businesses. It's good through Dec 31, 2026 (Logan time) and turns gray and says "Expired" after that.
 - **My Progress** (person button, top right): every stop you've found and when, plus resetting. Resetting asks twice: a page that lists exactly what will be erased, then an "Are you sure?" alert.
 - **Sign in with Apple** (optional): saves progress to iCloud so it follows you to another iPhone, and puts your first name on the "Quest complete" screen. Without signing in, progress stays on that phone. There's no server: progress lives in iCloud key-value storage on the player's own Apple account.
 - **iPhone Duo and wide screens**: the map sits beside the list instead of above it. The app supports every orientation and doesn't require full screen, so it fills the Duo's inner screen.
@@ -17,7 +17,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 - **Real questions.** The five questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
 - **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St).
 - **Walk the loop.** The 18 minutes is Apple Maps' estimate. Time it yourself on the walk and adjust `walkingMinutes` if it's off.
-- **The prize.** Downtown Logan's prize box holds the Handles coupon, but its offer still reads "Offer to be decided". Once the offer is agreed with Handles, put it in `offer` (and any changed `terms` or date) in the `prize` in `LoganQuest/Quest.swift`, and redraw the pitch coupon in `Partners/Handles` to match.
+- **The prize.** Downtown Logan's prize box holds a generic coupon that reads "Your Business" and "Your offer here". Once a business signs on, put its name in `business` and the agreed offer in `offer` (and any changed `terms` or date, plus the prize's `title` and `detail`) in the `prize` in `LoganQuest/Quest.swift`, then make the same changes in `Partners/make_coupon.py` and redraw the pitch coupon to match.
 - **Retake the screenshots.** Once the questions and the offer are real, run `Tools/screenshots.sh` and upload the new set (see **App Store screenshots** below).
 
 ## Adding a quest
@@ -42,7 +42,7 @@ Debug builds can open straight to a screen for screenshots: launch with `-LQScre
 
 ## App Store screenshots
 
-`Tools/screenshots.sh` takes the App Store screenshots and saves them in [`AppStore/Screenshots`](AppStore/Screenshots): the quest map, a stop's question, "Quest complete", the open prize box and the home screen, at 1320×2868 (App Store Connect's 6.9-inch iPhone size, which covers every iPhone). It builds a Debug copy and runs it on the newest "Pro Max" simulator, so it needs no Apple account. Upload them under App Store Connect → Logan Quests → Distribution → iOS App Version → App Previews and Screenshots, in order. The current set shows the practice questions and "Offer to be decided", so retake them once those are real.
+`Tools/screenshots.sh` takes the App Store screenshots and saves them in [`AppStore/Screenshots`](AppStore/Screenshots): the quest map, a stop's question, "Quest complete", the open prize box and the home screen, at 1320×2868 (App Store Connect's 6.9-inch iPhone size, which covers every iPhone). It builds a Debug copy and runs it on the newest "Pro Max" simulator, so it needs no Apple account. Upload them under App Store Connect → Logan Quests → Distribution → iOS App Version → App Previews and Screenshots, in order. The current set shows the practice questions and the generic coupon, so retake them once those are real.
 
 ## TestFlight
 
@@ -60,7 +60,7 @@ To add someone else on the developer team, open App Store Connect → Logan Ques
 
 ## Partners
 
-`Partners/Handles/coupon.png` is a coupon mockup for pitching Handles. The offer reads "Offer to be decided" and it expires December 31, 2026. `make_coupon.py` beside it redraws the coupon; its docstring has the command. The app's prize box draws the same coupon in SwiftUI (`LoganQuest/CouponView.swift`) from the `prize` in `Quest.swift`, so change both when the offer changes.
+`Partners/coupon.png` is a generic coupon mockup for pitching Logan businesses. It reads "Your Business" and "Your offer here", and it expires December 31, 2026. `make_coupon.py` beside it redraws the coupon; its docstring has the command. The app's prize box draws the same coupon in SwiftUI (`LoganQuest/CouponView.swift`) from the `prize` in `Quest.swift`, so change both when the offer changes.
 
 ## Icon
 
