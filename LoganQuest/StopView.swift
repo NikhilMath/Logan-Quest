@@ -23,7 +23,8 @@ struct StopView: View {
                     }
                 }
 
-                if progress.isFound(stop, in: quest) {
+                // Just unlocked: the question stays up, outlined green, until the sheet closes.
+                if progress.isFound(stop, in: quest) && !justUnlocked {
                     Section {
                         Label("Unlocked", systemImage: "checkmark.seal.fill")
                             .font(.title3.bold())
@@ -32,12 +33,12 @@ struct StopView: View {
                 } else {
                     Section("Question") {
                         Text(stop.question)
-                        TextField("Your answer", text: $answer)
-                            .focused($answerFocused)
-                            .autocorrectionDisabled()
-                            .submitLabel(.done)
-                            .onSubmit(check)
-                        if wrongTries > 0 {
+                        answerField
+                        if justUnlocked {
+                            Label("Unlocked!", systemImage: "checkmark.seal.fill")
+                                .bold()
+                                .foregroundStyle(.green)
+                        } else if wrongTries > 0 {
                             Text("Not quite. Look around and try again.")
                                 .foregroundStyle(.red)
                         }
@@ -45,7 +46,7 @@ struct StopView: View {
                     Section {
                         Button("Unlock", action: check)
                             .bold()
-                            .disabled(answer.trimmingCharacters(in: .whitespaces).isEmpty)
+                            .disabled(answer.trimmingCharacters(in: .whitespaces).isEmpty || justUnlocked)
                     }
                 }
             }
@@ -59,6 +60,32 @@ struct StopView: View {
             .sensoryFeedback(.success, trigger: justUnlocked)
             .sensoryFeedback(.error, trigger: wrongTries)
         }
+    }
+
+    /// The answer box: outlined red, turning green (with a checkmark) once what's typed is right.
+    private var answerField: some View {
+        let isRight = justUnlocked || stop.unlocks(with: answer)
+        return HStack {
+            TextField("Your answer", text: $answer)
+                .focused($answerFocused)
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+                .onSubmit(check)
+                .disabled(justUnlocked)
+            if isRight {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+                    .accessibilityLabel("Right answer")
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .strokeBorder(isRight ? Color.green : Color.red, lineWidth: 2)
+        }
+        .animation(.easeInOut(duration: 0.2), value: isRight)
     }
 
     private func check() {
