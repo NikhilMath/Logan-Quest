@@ -68,15 +68,12 @@ struct QuestView: View {
     private var questMap: some View {
         Map(initialPosition: .region(quest.region), selection: $selectedStopID) {
             ForEach(Array(quest.stops.enumerated()), id: \.element.id) { index, stop in
-                if progress.isFound(stop, in: quest) {
-                    Marker(stop.name, systemImage: "checkmark", coordinate: stop.coordinate)
-                        .tint(Color.green)
-                        .tag(stop.id)
-                } else {
-                    Marker(stop.name, systemImage: "\(index + 1).circle", coordinate: stop.coordinate)
-                        .tint(Color.accentColor)
-                        .tag(stop.id)
+                // Small round pins centered on the spot, not balloon markers: some stops are only
+                // half a block apart, and balloons that tall cover each other.
+                Annotation(stop.name, coordinate: stop.coordinate, anchor: .center) {
+                    StopPin(number: index + 1, found: progress.isFound(stop, in: quest))
                 }
+                .tag(stop.id)
             }
         }
         .mapStyle(.standard(pointsOfInterest: .excludingAll))
@@ -87,7 +84,7 @@ struct QuestView: View {
             if showsMap {
                 Section {
                     questMap
-                        .frame(height: 300)
+                        .frame(height: 340)
                         .listRowInsets(EdgeInsets())
                 }
             }
@@ -183,6 +180,31 @@ private struct PrizeBoxRow: View {
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
+    }
+}
+
+/// A stop on the quest map: its number until it's found, then a green check.
+private struct StopPin: View {
+    let number: Int
+    let found: Bool
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(found ? Color.green : Color.accentColor)
+            if found {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 11, weight: .heavy))
+            } else {
+                Text("\(number)")
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+            }
+        }
+        .foregroundStyle(.white)
+        .frame(width: 24, height: 24)
+        .overlay(Circle().stroke(.white, lineWidth: 2))
+        .shadow(color: .black.opacity(0.25), radius: 2, y: 1)
+        .accessibilityLabel(found ? "Stop \(number), found" : "Stop \(number)")
     }
 }
 
