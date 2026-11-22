@@ -10,6 +10,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 - **Prize box**: every quest has one, shown under the walking time. It stays locked until every stop is found. Then a tap sends the lid flying and the prize rises out, with spinning rays and a ticking clock so it can't be passed off as a screenshot either. The "Quest complete" screen has a button to it too. Downtown Logan's prize is a coupon to show at a business's counter. For now it's a generic one ("Your Business", "Your offer here") for pitching to Logan businesses. It's good through Dec 31, 2026 (Logan time) and turns gray and says "Expired" after that.
 - **My Progress** (person button, top right): every stop you've found and when, plus resetting. Resetting asks twice: a page that lists exactly what will be erased, then an "Are you sure?" alert.
 - **Sign in with Apple** (optional): saves progress to iCloud so it follows you to another iPhone, and puts your first name on the "Quest complete" screen. Without signing in, progress stays on that phone. There's no server: progress lives in iCloud key-value storage on the player's own Apple account.
+- **Deleting the app** and downloading it again keeps everything: progress and the sign-in are also saved in the phone's keychain, which iOS keeps when an app is deleted.
 - **iPhone Duo and wide screens**: the map sits beside the list instead of above it. The app supports every orientation and doesn't require full screen, so it fills the Duo's inner screen.
 
 ## Before launch
@@ -38,7 +39,7 @@ Open `LoganQuest.xcodeproj` in Xcode and run. From the command line, point at th
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild -project LoganQuest.xcodeproj -scheme LoganQuest -destination 'generic/platform=iOS Simulator' build
 ```
 
-Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `stop` (the first stop not found yet, showing its question), `complete`, `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound 3` to start with the first quest's first three stops found (any number; `0` clears it). This replaces the progress saved on that simulator.
+Debug builds can open straight to a screen for screenshots: launch with `-LQScreen myProgress`, `reset`, `quest`, `stop` (the first stop not found yet, showing its question), `complete`, `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound 3` to start with the first quest's first three stops found (any number; `0` clears it). This replaces the progress saved on that simulator. Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps them), so use `-LQFound 0` and Sign Out instead.
 
 ## App Store screenshots
 

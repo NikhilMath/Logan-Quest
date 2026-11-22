@@ -54,6 +54,9 @@ something that doesn't build.
 - Progress: `ProgressStore` (UserDefaults, plus iCloud key-value storage while signed in with
   Apple). Resets are timestamps so they win over stale copies on other devices. Keep
   `ProgressStore.merge` symmetric.
+- Deleting the app and downloading it again must keep everything. Progress and the sign-in
+  (`AccountStore`) are also saved in the keychain (`Keychain.swift`), which iOS keeps when an
+  app is deleted. Anything new that gets saved needs a keychain copy too.
 - Resetting progress must keep its two warnings (the `ResetProgressView` page, then the alert).
 - Layout must keep working on iPhone Duo (wide inner screen): no `UIRequiresFullScreen`, all
   orientations, map beside the list in regular width. Nikhil's own test phone is an iPhone Duo.
@@ -163,7 +166,8 @@ Debug builds can open straight to a screen: add `-LQScreen <name>` to the `launc
 `<name>` is `myProgress`, `reset`, `quest`, `stop` (the first stop not found yet), `complete`,
 `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound <n>` to start with the
 first quest's first `n` stops found (`0` clears it; it replaces that simulator's saved progress).
-Check layout changes on the **iPhone Duo** simulator too, if this Xcode has one, in both
+Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps
+them): use `-LQFound 0` and the Sign Out button instead. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has one, in both
 orientations.
 
 On a simulator outside team `A5SDFXT5VB`, Sign in with Apple and iCloud sync may not work.

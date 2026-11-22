@@ -3,8 +3,10 @@ import Observation
 
 /// Which stops the player has found in each quest.
 ///
-/// Always saved on the phone. While the player is signed in, it's also saved to iCloud
-/// (their Apple account), so it follows them to a new or second iPhone.
+/// Always saved on the phone, in UserDefaults and in the keychain. The keychain copy stays when
+/// the app is deleted, so progress comes back if the player downloads the app again. While the
+/// player is signed in, it's also saved to iCloud (their Apple account), so it follows them to a
+/// new or second iPhone.
 @MainActor
 @Observable
 final class ProgressStore {
@@ -21,14 +23,25 @@ final class ProgressStore {
     private(set) var savesToCloud = false
 
     @ObservationIgnored private let local: UserDefaults
+    @ObservationIgnored private let keychain: Keychain?
     @ObservationIgnored private let cloud: NSUbiquitousKeyValueStore?
     @ObservationIgnored private var cloudObserver: NSObjectProtocol?
     private static let key = "progress.v1"
 
-    init(local: UserDefaults = .standard, cloud: NSUbiquitousKeyValueStore? = .default) {
+    init(
+        local: UserDefaults = .standard,
+        keychain: Keychain? = .standard,
+        cloud: NSUbiquitousKeyValueStore? = .default
+    ) {
         self.local = local
+        self.keychain = keychain
         self.cloud = cloud
-        records = Self.decode(local.data(forKey: Self.key))
+        // After a reinstall only the keychain has it; after updating from a build without the
+        // keychain copy, only UserDefaults does. Merging covers both and fills in the other.
+        let saved = Self.decode(local.data(forKey: Self.key))
+        let kept = Self.decode(keychain?.data(forKey: Self.key))
+        records = Self.merge(saved, kept)
+        if records != saved || records != kept { saveOnPhone(Self.encode(records)) }
         #if DEBUG
         if let count = DebugScreen.foundStops { setFoundForScreenshots(count) }
         #endif
@@ -120,7 +133,7 @@ final class ProgressStore {
         let merged = Self.merge(records, cloudRecords)
         if merged != records {
             records = merged
-            local.set(Self.encode(merged), forKey: Self.key)
+            saveOnPhone(Self.encode(merged))
         }
         if merged != cloudRecords {
             cloud.set(Self.encode(merged), forKey: Self.key)
@@ -129,8 +142,13 @@ final class ProgressStore {
 
     private func save() {
         let data = Self.encode(records)
-        local.set(data, forKey: Self.key)
+        saveOnPhone(data)
         if savesToCloud { cloud?.set(data, forKey: Self.key) }
+    }
+
+    private func saveOnPhone(_ data: Data) {
+        local.set(data, forKey: Self.key)
+        keychain?.set(data, forKey: Self.key)
     }
 
     /// Keeps every find from either side (earliest date wins), minus anything from before the latest reset.

@@ -4,7 +4,8 @@ import Observation
 
 /// Sign in with Apple. Signing in turns on saving progress to iCloud and puts the player's
 /// first name on the quest complete screen. There's no server: the Apple user ID and name
-/// stay on the phone (and the name in the player's own iCloud).
+/// stay on the phone (and the name in the player's own iCloud). They're kept in the keychain
+/// too, so deleting the app and downloading it again doesn't sign the player out.
 @MainActor
 @Observable
 final class AccountStore {
@@ -15,15 +16,24 @@ final class AccountStore {
     var isSignedIn: Bool { userID != nil }
 
     @ObservationIgnored private let local: UserDefaults
+    @ObservationIgnored private let keychain: Keychain?
     @ObservationIgnored private let cloud: NSUbiquitousKeyValueStore?
     private static let userKey = "appleUserID"
     private static let nameKey = "playerName"
 
-    init(local: UserDefaults = .standard, cloud: NSUbiquitousKeyValueStore? = .default) {
+    init(
+        local: UserDefaults = .standard,
+        keychain: Keychain? = .standard,
+        cloud: NSUbiquitousKeyValueStore? = .default
+    ) {
         self.local = local
+        self.keychain = keychain
         self.cloud = cloud
-        userID = local.string(forKey: Self.userKey)
-        name = local.string(forKey: Self.nameKey)
+        // After a reinstall only the keychain has them; after updating from a build without the
+        // keychain copy, only UserDefaults does. Saving puts them back in both.
+        userID = keychain?.string(forKey: Self.userKey) ?? local.string(forKey: Self.userKey)
+        name = keychain?.string(forKey: Self.nameKey) ?? local.string(forKey: Self.nameKey)
+        save()
         NotificationCenter.default.addObserver(
             forName: ASAuthorizationAppleIDProvider.credentialRevokedNotification,
             object: nil,
@@ -74,5 +84,7 @@ final class AccountStore {
     private func save() {
         local.set(userID, forKey: Self.userKey)
         local.set(name, forKey: Self.nameKey)
+        keychain?.set(userID, forKey: Self.userKey)
+        keychain?.set(name, forKey: Self.nameKey)
     }
 }
