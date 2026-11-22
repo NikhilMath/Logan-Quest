@@ -15,7 +15,7 @@ push again. Never force-push.
 - Every push to `main` ships a TestFlight build through Xcode Cloud (README → TestFlight). `Tools/release.sh` uploads by hand if Xcode Cloud is down.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`: never rename one that has shipped.
 - The current questions are practice placeholders. Don't invent "real" ones (plaque wording and so on); the user collects those on foot.
-- Don't name a business or promise a reward in the app until the user says one is agreed.
+- Don't name a business or promise a reward in the app until the user says the offer is agreed. Handles (a Logan shop) is open to a finisher reward, but the offer is still to be decided; the pitch coupon is in `Partners/Handles`.
 - Progress: `ProgressStore` (UserDefaults, plus iCloud key-value storage while signed in with Apple). Resets are timestamps so they win over stale copies on other devices; keep `ProgressStore.merge` symmetric.
 - Resetting progress must keep its two warnings (the `ResetProgressView` page, then the alert).
 - Layout must keep working on iPhone Duo (wide inner screen): no `UIRequiresFullScreen`, all orientations, map beside the list in regular width.

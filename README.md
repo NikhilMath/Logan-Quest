@@ -17,7 +17,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 - **Real questions.** The four questions in `LoganQuest/Quest.swift` are practice placeholders ("what's this building called?"). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
 - **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St).
 - **Walk the loop.** The 15 minutes is Apple Maps' estimate. Time it yourself on the walk and adjust `walkingMinutes` if it's off.
-- **The prize.** Each prize box holds a badge for now (`prize` in `LoganQuest/Quest.swift`). Nothing in the app names a business or a real-world reward yet. Put the real prize there once one is agreed.
+- **The prize.** Each prize box holds a badge for now (`prize` in `LoganQuest/Quest.swift`). Handles is open to giving finishers a reward, but no offer is agreed yet, so nothing in the app names a business or a real-world reward. Put the real prize there once the offer is settled.
 
 ## Adding a quest
 
@@ -52,6 +52,10 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 To add someone else on the developer team, open App Store Connect → Logan Quests → TestFlight → **Me** → Testers → **+**.
 
 Friends outside your developer account go in an **External Testing** group. Apple reviews the first build sent to external testers.
+
+## Partners
+
+`Partners/Handles/coupon.png` is a coupon mockup for pitching Handles. The offer reads "Offer to be decided" and it expires December 31, 2026. `make_coupon.py` beside it redraws the coupon; its docstring has the command. The coupon isn't in the app.
 
 ## Icon
 
