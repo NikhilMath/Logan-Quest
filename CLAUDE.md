@@ -194,9 +194,18 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
   push cancels a build that's still running. Xcode Cloud numbers the builds itself. Nikhil
   manages the workflow in App Store Connect → Xcode Cloud (failed builds show there and get
   emailed to him). Nothing in the repo needs changing for this.
-- **By hand**, if Xcode Cloud is down, or to put a build in the public group: `Tools/release.sh`.
-  It archives, signs with the Apple account signed in to Xcode, and uploads, and Xcode picks the
-  next build number. Only a Mac signed in to the team with permission to upload can run it, which
+- **Version:** every build goes up by .1. `ci_scripts/ci_pre_xcodebuild.sh` (Xcode Cloud runs
+  it before each build) turns the build number into the version: build 21 is 1.1, build 22 is
+  1.2, and 1.9 is followed by 1.10. Builds 20 and earlier all shipped as 1.0. Nothing is
+  committed for it, so leave `MARKETING_VERSION` in the project at 1.0. A cancelled build still
+  uses up its number, so TestFlight can skip a version. If Nikhil resets the build number in
+  Xcode Cloud, change `first_build` in the script to match.
+- **By hand**, if Xcode Cloud is down, or to put a build in the public group:
+  `Tools/release.sh <version>`, where the version is .1 above the newest build in TestFlight
+  (`Tools/release.sh 1.7` after 1.6). It archives, signs with the Apple account signed in to
+  Xcode, and uploads, and Xcode picks the next build number. The next Xcode Cloud build still
+  takes its version from its own build number. Only a Mac signed in to the team with permission
+  to upload can run it, which
   in practice means Nikhil's. To reach the public link, Nikhil then adds the build under
   TestFlight → **Public** → Builds → **+**, and it waits for Beta App Review.
 

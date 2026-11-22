@@ -55,7 +55,9 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
 **Every push to `main` ships a TestFlight build.** Xcode Cloud's **Default** workflow archives `main` on each push and sends the build to the internal TestFlight group **Me**, usually 15–30 minutes after the push. If another push lands while a build is running, the older build is cancelled. Xcode Cloud numbers the builds itself, starting at 10 (after the five builds uploaded by hand); change that under App Store Connect → Xcode Cloud → Settings → Build Number. Edit the workflow under App Store Connect → Xcode Cloud → Manage Workflows, or in Xcode with Integrate → Manage Workflows.
 
-**To upload by hand instead:** run `Tools/release.sh`. It archives, signs with the Apple account signed in to Xcode, and uploads. Xcode picks the next build number.
+**Every build raises the version by .1.** Before each build, Xcode Cloud runs [`ci_scripts/ci_pre_xcodebuild.sh`](ci_scripts/ci_pre_xcodebuild.sh), which turns the build number into the version: build 21 is 1.1, build 22 is 1.2, and so on (1.9 is followed by 1.10). Builds 20 and earlier all shipped as 1.0. Nothing gets committed for it, so the project itself stays at 1.0. A cancelled build still uses up its number, so TestFlight can skip a version now and then. If the build number in Xcode Cloud is ever reset, change `first_build` in the script to match.
+
+**To upload by hand instead:** run `Tools/release.sh <version>`, with the version .1 above the newest build in TestFlight (for example `Tools/release.sh 1.7` after 1.6). It archives, signs with the Apple account signed in to Xcode, and uploads. Xcode picks the next build number.
 
 **Getting it on your iPhone:** install **TestFlight** from the App Store, sign in with the same Apple Account as the developer account, and tap **Install** next to Logan Quests. TestFlight offers each new build as it arrives.
 
