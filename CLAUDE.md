@@ -1,18 +1,24 @@
 # Logan Quests: notes for Claude
 
 This file is the whole playbook: setting up a Mac, building, running, committing, pushing and
-shipping. It's used on more than one computer. Nikhil owns the project (GitHub `NikhilMath`,
-the Apple developer account, App Store Connect). Friends help on their own Macs with their own
-Claude Code. On a Mac that isn't set up yet, start with **Setting up a new Mac** below and walk
-the person through it one step at a time. When something on this list changes, update this
-file (and the README, if it says the same thing) in the same commit.
+shipping. It's used on more than one computer:
+
+- **Nikhil** owns the project (GitHub `NikhilMath`, the Apple developer account, App Store
+  Connect).
+- **Forrest**, Nikhil's friend, works on his own Mac with his own Claude Code. His GitHub
+  account is `fso5`, and he's already a collaborator with push access.
+
+If `gh api user --jq .login` prints `fso5`, you're on Forrest's Mac. On a Mac that isn't set up
+yet, start with **Setting up a new Mac** below and walk the person through it one step at a
+time. When something here changes, update this file (and the README, if it says the same thing)
+in the same commit.
 
 ## Rules
 
 ### Commit and push every change
 
 Every change gets committed and pushed to `main` (people may call it "master"; the branch is
-`main`). This goes for whoever you're working with, not only Nikhil.
+`main`). This goes for Forrest too, not only Nikhil.
 
 1. Before starting, get the latest: `git pull --rebase origin main`.
 2. Build for the simulator (below) and make sure it succeeds. For anything visible, look at it
@@ -58,8 +64,14 @@ something that doesn't build.
 Do these in order. Steps marked **(they run it)** need the person's Mac password or a sign-in
 in a window, so give them the command and wait for them to say it's done.
 
-1. **Xcode.** Install the newest Xcode from the Mac App Store (the project is built with Xcode
-   27). Open it once and let it install its components. Then **(they run it)**:
+1. **Xcode.** Install the newest Xcode from the Mac App Store. Nikhil builds with Xcode 27, but
+   anything from Xcode 16 up should build the project (that's the oldest Xcode that reads its
+   project format), though only Xcode 27 has actually been tried. Xcode 16 needs macOS
+   14.5 or later; check with `sw_vers -productVersion`. If the App Store says the newest Xcode
+   needs a newer macOS, either update macOS or download the newest Xcode that this macOS
+   supports from https://developer.apple.com/download/all (any Apple Account can sign in).
+   Older Xcodes may not have an iPhone Duo simulator. Open Xcode once and let it install its
+   components. Then **(they run it)**:
 
    ```bash
    sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
@@ -92,11 +104,12 @@ in a window, so give them the command and wait for them to say it's done.
    cd Logan-Quest
    ```
 
-6. **Push access.** Pushing needs Nikhil to add their GitHub username under the repo's
-   Settings → Collaborators → Add people. They accept the invite from the email or at
-   https://github.com/NikhilMath/Logan-Quest/invitations. Check with
-   `gh repo view NikhilMath/Logan-Quest --json viewerPermission`: `WRITE` or `ADMIN` means
-   they can push.
+6. **Push access.** Check with `gh repo view NikhilMath/Logan-Quest --json viewerPermission`:
+   `WRITE` or `ADMIN` means they can push. Forrest (`fso5`) already has `WRITE`, so if it
+   says otherwise on his Mac, `gh auth login` was done with a different GitHub account. Anyone
+   else needs Nikhil to add their GitHub username under the repo's Settings → Collaborators →
+   Add people, then accepts the invite from the email or at
+   https://github.com/NikhilMath/Logan-Quest/invitations.
 
 7. **Python tools** (only for redrawing the coupon or the icon):
    `python3 -m pip install --user pillow`.
@@ -208,8 +221,9 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 - **Code signing fails with "resource fork, Finder information, or similar detritus":** the
   build output is in an iCloud-synced folder. Build with `-derivedDataPath /tmp/LoganQuest-DD`,
   or move the clone out of Desktop and Documents.
-- **Push fails with 403 or "Permission denied":** the person isn't a collaborator yet, or hasn't
-  accepted the invite (setup step 6), or `gh auth setup-git` wasn't run.
+- **Push fails with 403 or "Permission denied":** `gh auth setup-git` wasn't run, or the
+  GitHub account signed in isn't a collaborator. Check `gh api user --jq .login`: on Forrest's
+  Mac it should print `fso5`. Anyone else needs Nikhil to add them (setup step 6).
 - **Push rejected as "non-fast-forward" or "fetch first":** someone else pushed.
   `git pull --rebase origin main`, build, push again. Never force-push.
 - **No build on TestFlight 30+ minutes after a push:** check App Store Connect → Xcode Cloud →
