@@ -1,12 +1,12 @@
 import Foundation
 import Observation
 
-/// Which stops the player has found in each quest.
+/// Which stops the player has found in each quest, and the badges they've earned.
 ///
 /// Always saved on the phone, in UserDefaults and in the keychain. The keychain copy stays when
 /// the app is deleted, so progress comes back if the player downloads the app again. While the
 /// player is signed in, it's also saved to iCloud (their Apple account), so it follows them to a
-/// new or second iPhone.
+/// new or second iPhone. Badges are saved apart from the finds, and resetting never takes them away.
 @MainActor
 @Observable
 final class ProgressStore {
@@ -20,6 +20,8 @@ final class ProgressStore {
 
     /// Quest ID → that quest's progress.
     private(set) var records: [String: QuestRecord]
+    /// Badge ID → when it was earned: when the last stop on its route was found. Never removed.
+    private(set) var badges: [String: Date]
     private(set) var savesToCloud = false
 
     @ObservationIgnored private let local: UserDefaults
@@ -27,6 +29,7 @@ final class ProgressStore {
     @ObservationIgnored private let cloud: NSUbiquitousKeyValueStore?
     @ObservationIgnored private var cloudObserver: NSObjectProtocol?
     private static let key = "progress.v1"
+    private static let badgesKey = "badges.v1"
 
     init(
         local: UserDefaults = .standard,
@@ -38,10 +41,16 @@ final class ProgressStore {
         self.cloud = cloud
         // After a reinstall only the keychain has it; after updating from a build without the
         // keychain copy, only UserDefaults does. Merging covers both and fills in the other.
-        let saved = Self.decode(local.data(forKey: Self.key))
-        let kept = Self.decode(keychain?.data(forKey: Self.key))
+        let saved: [String: QuestRecord] = Self.decode(local.data(forKey: Self.key))
+        let kept: [String: QuestRecord] = Self.decode(keychain?.data(forKey: Self.key))
         records = Self.merge(saved, kept)
-        if records != saved || records != kept { saveOnPhone(Self.encode(records)) }
+        let savedBadges: [String: Date] = Self.decode(local.data(forKey: Self.badgesKey))
+        let keptBadges: [String: Date] = Self.decode(keychain?.data(forKey: Self.badgesKey))
+        badges = Self.mergeBadges(savedBadges, keptBadges)
+        if records != saved || records != kept { saveOnPhone(Self.encode(records), forKey: Self.key) }
+        // Also gives badges for routes finished before there were badges.
+        awardBadges()
+        if badges != savedBadges || badges != keptBadges { saveOnPhone(Self.encode(badges), forKey: Self.badgesKey) }
         #if DEBUG
         if let difficulty = DebugScreen.difficulty, let quest = Quest.all.first {
             UserDefaults.standard.set(difficulty.rawValue, forKey: quest.difficultyKey)
@@ -52,7 +61,8 @@ final class ProgressStore {
 
     #if DEBUG
     /// Debug builds only (the -LQFound launch argument): the first `count` stops on the first
-    /// quest's chosen route, found a few minutes apart and ending now. Replaces that quest's progress.
+    /// quest's chosen route, found a few minutes apart and ending now. Replaces that quest's
+    /// progress, and all badges with just the ones those finds earn.
     private func setFoundForScreenshots(_ count: Int) {
         guard let quest = Quest.all.first else { return }
         let difficulty = UserDefaults.standard.string(forKey: quest.difficultyKey).flatMap(Difficulty.init)
@@ -62,7 +72,9 @@ final class ProgressStore {
             record.finds[stop.id] = Date.now.addingTimeInterval(Double(index + 1 - stops.count) * 8 * 60)
         }
         records[quest.id] = record
+        badges = [:]
         save()
+        saveBadges()
     }
     #endif
 
@@ -84,6 +96,21 @@ final class ProgressStore {
     /// Whether any stop on any of the quest's routes has been found.
     func hasProgress(in quest: Quest) -> Bool { quest.allStops.contains { isFound($0, in: quest) } }
     var hasAnyProgress: Bool { Quest.all.contains(where: hasProgress) }
+
+    // MARK: Badges
+
+    /// Gives the badge for every finished route that doesn't have it yet, dated when the route's
+    /// last stop was found. Returns whether there were any.
+    @discardableResult
+    private func awardBadges() -> Bool {
+        var earned = badges
+        for badge in Badge.all where earned[badge.id] == nil {
+            earned[badge.id] = finishedAt(badge.route, in: badge.quest)
+        }
+        guard earned != badges else { return false }
+        badges = earned
+        return true
+    }
 
     // MARK: Changing
 
@@ -137,26 +164,44 @@ final class ProgressStore {
     /// Combines this phone's progress with what's in iCloud and saves the result to both.
     private func syncWithCloud() {
         guard savesToCloud, let cloud else { return }
-        let cloudRecords = Self.decode(cloud.data(forKey: Self.key))
+        let cloudRecords: [String: QuestRecord] = Self.decode(cloud.data(forKey: Self.key))
         let merged = Self.merge(records, cloudRecords)
         if merged != records {
             records = merged
-            saveOnPhone(Self.encode(merged))
+            saveOnPhone(Self.encode(merged), forKey: Self.key)
         }
         if merged != cloudRecords {
             cloud.set(Self.encode(merged), forKey: Self.key)
+        }
+
+        let cloudBadges: [String: Date] = Self.decode(cloud.data(forKey: Self.badgesKey))
+        let mergedBadges = Self.mergeBadges(badges, cloudBadges)
+        var badgesChanged = mergedBadges != badges
+        if badgesChanged { badges = mergedBadges }
+        // Finds from another device can finish a route here.
+        if awardBadges() { badgesChanged = true }
+        if badgesChanged { saveOnPhone(Self.encode(badges), forKey: Self.badgesKey) }
+        if badges != cloudBadges {
+            cloud.set(Self.encode(badges), forKey: Self.badgesKey)
         }
     }
 
     private func save() {
         let data = Self.encode(records)
-        saveOnPhone(data)
+        saveOnPhone(data, forKey: Self.key)
         if savesToCloud { cloud?.set(data, forKey: Self.key) }
+        if awardBadges() { saveBadges() }
     }
 
-    private func saveOnPhone(_ data: Data) {
-        local.set(data, forKey: Self.key)
-        keychain?.set(data, forKey: Self.key)
+    private func saveBadges() {
+        let data = Self.encode(badges)
+        saveOnPhone(data, forKey: Self.badgesKey)
+        if savesToCloud { cloud?.set(data, forKey: Self.badgesKey) }
+    }
+
+    private func saveOnPhone(_ data: Data, forKey key: String) {
+        local.set(data, forKey: key)
+        keychain?.set(data, forKey: key)
     }
 
     /// Keeps every find from either side (earliest date wins), minus anything from before the latest reset.
@@ -172,12 +217,18 @@ final class ProgressStore {
         return result
     }
 
-    private nonisolated static func decode(_ data: Data?) -> [String: QuestRecord] {
-        guard let data, let records = try? JSONDecoder().decode([String: QuestRecord].self, from: data) else { return [:] }
-        return records
+    /// Keeps every badge from either side, each with the earliest date it was earned.
+    nonisolated static func mergeBadges(_ a: [String: Date], _ b: [String: Date]) -> [String: Date] {
+        a.merging(b) { min($0, $1) }
     }
 
-    private nonisolated static func encode(_ records: [String: QuestRecord]) -> Data {
-        (try? JSONEncoder().encode(records)) ?? Data()
+    /// Empty when there's nothing saved yet (or it can't be read).
+    private nonisolated static func decode<Key: Hashable & Decodable, Value: Decodable>(_ data: Data?) -> [Key: Value] {
+        guard let data, let value = try? JSONDecoder().decode([Key: Value].self, from: data) else { return [:] }
+        return value
+    }
+
+    private nonisolated static func encode(_ value: some Encodable) -> Data {
+        (try? JSONEncoder().encode(value)) ?? Data()
     }
 }

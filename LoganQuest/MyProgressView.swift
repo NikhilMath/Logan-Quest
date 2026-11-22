@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// What the player has done in every quest, plus sign-in and resetting.
+/// What the player has done in every quest and the badges they've earned, plus sign-in and resetting.
 struct MyProgressView: View {
     @Environment(ProgressStore.self) private var progress
     @Environment(AccountStore.self) private var account
@@ -24,6 +24,8 @@ struct MyProgressView: View {
                          ? "Your progress is saved to iCloud and shows up on any iPhone where you sign in."
                          : "Right now your progress is saved on this iPhone only.")
                 }
+
+                BadgesSection()
 
                 ForEach(Quest.all) { quest in
                     QuestProgressSection(quest: quest)
@@ -176,6 +178,10 @@ struct ResetProgressView: View {
                         .foregroundStyle(.secondary)
                     if account.isSignedIn {
                         Text("This also erases it from iCloud and your other devices.")
+                            .foregroundStyle(.secondary)
+                    }
+                    if !progress.badges.isEmpty {
+                        Text("Your badges stay.")
                             .foregroundStyle(.secondary)
                     }
                 }

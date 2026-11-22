@@ -54,7 +54,11 @@ something that doesn't build.
 - Progress: `ProgressStore` (UserDefaults, plus iCloud key-value storage while signed in with
   Apple). Resets are timestamps so they win over stale copies on other devices. Keep
   `ProgressStore.merge` symmetric.
-- Deleting the app and downloading it again must keep everything. Progress and the sign-in
+- Badges: `ProgressStore.badges`, one per quest route (`Badge.swift`), saved apart from the
+  finds under `badges.v1`. Resetting must never take a badge away; that's the point of them
+  (Nikhil asked for this on 2026-11-21). Badge IDs are the quest `id` plus the difficulty's raw
+  value, so never rename a `Difficulty` case. Keep `ProgressStore.mergeBadges` symmetric too.
+- Deleting the app and downloading it again must keep everything. Progress, badges and the sign-in
   (`AccountStore`) are also saved in the keychain (`Keychain.swift`), which iOS keeps when an
   app is deleted. Anything new that gets saved needs a keychain copy too.
 - Resetting progress must keep its two warnings (the `ResetProgressView` page, then the alert).
@@ -165,8 +169,9 @@ xcrun simctl io "iPhone 17" screenshot /tmp/loganquest.png
 Debug builds can open straight to a screen: add `-LQScreen <name>` to the `launch` line, where
 `<name>` is `myProgress`, `reset`, `quest`, `stop` (the first stop not found yet), `complete`,
 `prize` or `prizeOpen` (the prize box opening by itself). Add `-LQFound <n>` to start with the
-first quest's first `n` stops found (`0` clears it; it replaces that simulator's saved progress).
-Deleting the app from a simulator doesn't clear its progress or sign-in (the keychain keeps
+first quest's first `n` stops found (`0` clears it; it replaces that simulator's saved progress,
+and its badges with just the ones those finds earn).
+Deleting the app from a simulator doesn't clear its progress, badges or sign-in (the keychain keeps
 them): use `-LQFound 0` and the Sign Out button instead. Add `-LQDifficulty easy`, `medium` or
 `hard` to pick Downtown Logan's difficulty first (it stays picked); `-LQFound` counts along that
 difficulty's route. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
@@ -211,9 +216,9 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
 ## Everyday tasks
 
-- **Add a quest:** add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its `routes`
-  and a `prize`: a badge (`.badge(symbol:)`, an SF Symbol) or a business's coupon
-  (`.coupon(…)`). Only add a coupon for a business Nikhil has said yes to. Each route is a
+- **Add a quest:** add a `Quest` to `Quest.all` in `LoganQuest/Quest.swift`, with its `routes`,
+  a `prize` (a badge, `.badge(symbol:)` with an SF Symbol, or a business's coupon,
+  `.coupon(…)`) and a `badgeSymbol` (an SF Symbol for the badges its routes earn). Only add a coupon for a business Nikhil has said yes to. Each route is a
   difficulty (easy, medium, hard) with its stops in walking order; one route means no difficulty
   picker. Routes share `Stop` values, so a stop found on one difficulty counts on the others.
   Downtown Logan has all three: Medium is Easy plus 4 stops, Hard is Medium plus 6. To get each

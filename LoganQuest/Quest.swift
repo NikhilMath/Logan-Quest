@@ -11,6 +11,9 @@ struct Quest: Identifiable, Hashable {
     let routes: [Route]
     /// What's in the prize box, which opens once every stop on the chosen route is found.
     let prize: Prize
+    /// An SF Symbol for the quest's badges, one for finishing each route. Players keep badges
+    /// even after resetting their progress.
+    let badgeSymbol: String
 
     static func == (lhs: Quest, rhs: Quest) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -40,6 +43,7 @@ struct Quest: Identifiable, Hashable {
 }
 
 /// How many stops a quest asks for. Each harder route keeps the easier one's stops and adds more.
+/// The raw values are part of how badges are saved, so never change them.
 enum Difficulty: String, CaseIterable, Identifiable {
     case easy, medium, hard
 
@@ -194,7 +198,8 @@ extension Quest {
                 terms: "One per player",
                 goodThrough: DateComponents(year: 2026, month: 12, day: 31)
             ))
-        )
+        ),
+        badgeSymbol: "building.columns.fill"
     )
 }
 
