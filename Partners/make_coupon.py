@@ -1,4 +1,4 @@
-"""Draws the generic coupon mockup for pitching Logan businesses, in Logan Quests navy, gold
+"""Draws the generic coupon mockup for pitching Logan businesses, in Logan Quest navy, gold
 and cream.
 
     python3 Partners/make_coupon.py Partners/coupon.png
@@ -120,7 +120,7 @@ def draw():
     d.text((S(ox0 + 50), S((oy0 + oy1) / 2) - (bb[1] + bb[3]) / 2), offer, font=f, fill=GOLD_LIGHT)
 
     d.text((S(x0), S(690)), "Finish the Downtown Logan quest, then show the prize", font=font(40, "Medium"), fill=CREAM + (215,))
-    d.text((S(x0), S(740)), "screen in the Logan Quests app at the counter.", font=font(40, "Medium"), fill=CREAM + (215,))
+    d.text((S(x0), S(740)), "screen in the Logan Quest app at the counter.", font=font(40, "Medium"), fill=CREAM + (215,))
 
     # Expiry
     d.line([(S(x0), S(830)), (S(W - 110), S(830))], fill=CREAM + (60,), width=S(2))

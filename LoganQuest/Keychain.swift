@@ -2,7 +2,7 @@ import Foundation
 import Security
 
 /// A few small values saved in the iPhone's keychain. Unlike UserDefaults, the keychain keeps
-/// them when the app is deleted, so someone who deletes Logan Quests and downloads it again
+/// them when the app is deleted, so someone who deletes Logan Quest and downloads it again
 /// gets their progress and sign-in back. Like UserDefaults, they move to a new iPhone set up
 /// from a backup of this one.
 struct Keychain {

@@ -1,4 +1,4 @@
-"""Draws the Logan Quests app icon: L and Q drawn as one road, on red-rock orange. The L's road
+"""Draws the Logan Quest app icon: L and Q drawn as one road, on red-rock orange. The L's road
 comes down from the top, turns the corner and runs into the Q, a roundabout with a gold flag on
 its island; the Q's tail is a road leaving through the ring.
 

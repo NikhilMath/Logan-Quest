@@ -1,4 +1,4 @@
-# Logan Quests
+# Logan Quest
 
 An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop on a quest, answer a question only someone standing there would know, and unlock it. Finding every stop brings up a "Quest complete" screen with a ticking clock, so it can't be passed off as a screenshot.
 
@@ -48,11 +48,11 @@ Debug builds can open straight to a screen for screenshots: launch with `-LQScre
 
 ## App Store screenshots
 
-`Tools/screenshots.sh` takes the App Store screenshots and saves them in [`AppStore/Screenshots`](AppStore/Screenshots): the quest map, a stop's question, "Quest complete", the open prize box and the home screen, at 1320×2868 (App Store Connect's 6.9-inch iPhone size, which covers every iPhone). It builds a Debug copy and runs it on the newest "Pro Max" simulator, so it needs no Apple account. Upload them under App Store Connect → Logan Quests → Distribution → iOS App Version → App Previews and Screenshots, in order. The current set shows the practice questions and the generic coupon, so retake them once those are real.
+`Tools/screenshots.sh` takes the App Store screenshots and saves them in [`AppStore/Screenshots`](AppStore/Screenshots): the quest map, a stop's question, "Quest complete", the open prize box and the home screen, at 1320×2868 (App Store Connect's 6.9-inch iPhone size, which covers every iPhone). It builds a Debug copy and runs it on the newest "Pro Max" simulator, so it needs no Apple account. Upload them under App Store Connect → Logan Quest → Distribution → iOS App Version → App Previews and Screenshots, in order. The current set shows the practice questions and the generic coupon, so retake them once those are real.
 
 ## TestFlight
 
-The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
+The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
 
 **Every push to `main` ships a TestFlight build.** Xcode Cloud's **Default** workflow archives `main` on each push and sends the build to the internal TestFlight group **Me**, usually 15–30 minutes after the push. If another push lands while a build is running, the older build is cancelled. Xcode Cloud numbers the builds itself, starting at 10 (after the five builds uploaded by hand); change that under App Store Connect → Xcode Cloud → Settings → Build Number. Edit the workflow under App Store Connect → Xcode Cloud → Manage Workflows, or in Xcode with Integrate → Manage Workflows.
 
@@ -60,9 +60,9 @@ The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
 
 **To upload by hand instead:** run `Tools/release.sh <version>`, with the version .1 above the newest build in TestFlight (for example `Tools/release.sh 1.7` after 1.6). It archives, signs with the Apple account signed in to Xcode, and uploads. Xcode picks the next build number.
 
-**Getting it on your iPhone:** install **TestFlight** from the App Store, sign in with the same Apple Account as the developer account, and tap **Install** next to Logan Quests. TestFlight offers each new build as it arrives.
+**Getting it on your iPhone:** install **TestFlight** from the App Store, sign in with the same Apple Account as the developer account, and tap **Install** next to Logan Quest. TestFlight offers each new build as it arrives.
 
-To add someone else on the developer team, open App Store Connect → Logan Quests → TestFlight → **Me** → Testers → **+**.
+To add someone else on the developer team, open App Store Connect → Logan Quest → TestFlight → **Me** → Testers → **+**.
 
 **Public link for everyone else:** https://testflight.apple.com/join/ynz9DXQa, or scan [`TestFlight/qr.png`](TestFlight/qr.png). It joins the external group **Public** (open to anyone, no tester limit). Testers can install only once a build in **Public** has passed Beta App Review. Xcode Cloud builds are internal-only, so builds reach **Public** only when uploaded with `Tools/release.sh` and added to the group (App Store Connect → TestFlight → Public → Builds → **+**). The answers to the review questions are under TestFlight → Test Information. To redraw the QR code for a different link, run `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/make_qr.swift <link> TestFlight/qr.png`. It checks that the new image scans.
 

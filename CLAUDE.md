@@ -1,4 +1,4 @@
-# Logan Quests: notes for Claude
+# Logan Quest: notes for Claude
 
 This file is the whole playbook: setting up a Mac, building, running, committing, pushing and
 shipping. It's used on more than one computer:
@@ -38,8 +38,9 @@ something that doesn't build.
 ### Project rules
 
 - iPhone app (SwiftUI, iOS 18+), bundle ID `com.nikhilmath.loganquest`, Apple team
-  `A5SDFXT5VB`. The home-screen and App Store name is **Logan Quests**. The Xcode project and
-  target are still called `LoganQuest`. Don't change the team, bundle ID or entitlements in a
+  `A5SDFXT5VB`. The home-screen and App Store name is **Logan Quest** (Nikhil renamed it from "Logan
+  Quests" on 2026-11-22; the SKU stays `loganquests`). The Xcode project and target are
+  still called `LoganQuest`. Don't change the team, bundle ID or entitlements in a
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
@@ -131,7 +132,7 @@ in a window, so give them the command and wait for them to say it's done.
 The simulator needs no Apple access at all. A real iPhone needs one of these:
 
 - **TestFlight as an internal tester.** Nikhil adds the person in App Store Connect → Users and
-  Access → **+** (role Developer is enough), then under Logan Quests → TestFlight → **Me** →
+  Access → **+** (role Developer is enough), then under Logan Quest → TestFlight → **Me** →
   Testers → **+**. They install TestFlight from the App Store, sign in with that Apple Account,
   and tap **Install**. Every push to `main` shows up there 15–30 minutes later.
 - **The public TestFlight link**: https://testflight.apple.com/join/ynz9DXQa (QR code in
@@ -192,7 +193,7 @@ the top, press ⌘R.
 
 ## Shipping to TestFlight
 
-The app is set up in App Store Connect as **Logan Quests** (SKU `loganquests`).
+The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
 
 - **Automatic:** Xcode Cloud's **Default** workflow archives `main` on every push and sends the
   build to the internal TestFlight group **Me**, usually 15–30 minutes after the push. A newer

@@ -10,7 +10,7 @@
 #   Tools/screenshots.sh                       # picks the newest "iPhone NN Pro Max" simulator
 #   Tools/screenshots.sh "iPhone 16 Pro Max"   # or name one
 #
-# Then upload them in App Store Connect → Logan Quests → Distribution → iOS App Version →
+# Then upload them in App Store Connect → Logan Quest → Distribution → iOS App Version →
 # App Previews and Screenshots (drag them in, in order).
 set -euo pipefail
 

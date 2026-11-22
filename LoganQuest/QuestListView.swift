@@ -38,8 +38,8 @@ struct QuestListView: View {
                 }
             }
             // The logo header shows the name, so the bar stays empty here. The title is
-            // still set so the back button in a quest reads "Logan Quests".
-            .navigationTitle("Logan Quests")
+            // still set so the back button in a quest reads "Logan Quest".
+            .navigationTitle("Logan Quest")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(for: Quest.self) { quest in
                 QuestView(quest: quest)
@@ -99,7 +99,7 @@ private struct LogoHeader: View {
                 .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
-                Text("Logan Quests")
+                Text("Logan Quest")
                     .font(.largeTitle.bold())
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
