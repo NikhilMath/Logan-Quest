@@ -52,8 +52,51 @@ struct Quest: Identifiable, Hashable {
 struct Prize: Hashable {
     let title: String
     let detail: String
-    /// An SF Symbol, drawn in gold as it rises out of the box.
-    let symbol: String
+    let item: Item
+
+    enum Item: Hashable {
+        /// An SF Symbol, drawn in gold as it rises out of the box.
+        case badge(symbol: String)
+        /// A coupon from a Logan business, shown at its counter.
+        case coupon(Coupon)
+    }
+
+    var coupon: Coupon? {
+        if case .coupon(let coupon) = item { coupon } else { nil }
+    }
+}
+
+/// A coupon from a business. It's good through the end of its last day, Logan time.
+struct Coupon: Hashable {
+    let business: String
+    /// What finishers get. Only put in an offer the business has agreed to.
+    let offer: String
+    let terms: String
+    /// Midnight at the start of the last day it's good, in Logan.
+    let lastDay: Date
+
+    init(business: String, offer: String, terms: String, goodThrough day: DateComponents) {
+        self.business = business
+        self.offer = offer
+        self.terms = terms
+        lastDay = Coupon.logan.date(from: day)!
+    }
+
+    /// Logan keeps Mountain Time.
+    static let logan: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Denver")!
+        return calendar
+    }()
+
+    func isExpired(at date: Date = .now) -> Bool {
+        date >= Coupon.logan.date(byAdding: .day, value: 1, to: lastDay)!
+    }
+
+    /// "Dec 31, 2026"
+    var lastDayText: String {
+        lastDay.formatted(Date.FormatStyle(timeZone: Coupon.logan.timeZone).month(.abbreviated).day().year())
+    }
 }
 
 extension Quest {
@@ -108,11 +151,18 @@ extension Quest {
         // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Ellen Eccles Theatre"
         walkingMinutes: 17,
         walkingMeters: 1295,
-        // A badge for now. Put the real prize here once one is agreed.
+        // Handles is open to a finisher reward, but the offer isn't agreed yet.
+        // Fill in `offer` (and `terms`, if they change) once it is. The pitch coupon in
+        // Partners/Handles shows the same thing, so keep the two matching.
         prize: Prize(
-            title: "Downtown Explorer",
-            detail: "Your badge for walking the whole downtown loop and finding every stop.",
-            symbol: "medal.fill"
+            title: "Handles coupon",
+            detail: "Show this screen at the counter at Handles. The ticking clock shows it's not a screenshot.",
+            item: .coupon(Coupon(
+                business: "Handles",
+                offer: "Offer to be decided",
+                terms: "One per player",
+                goodThrough: DateComponents(year: 2026, month: 12, day: 31)
+            ))
         )
     )
 }

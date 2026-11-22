@@ -24,14 +24,16 @@ struct PrizeView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 28) {
-                        stage(unlocked: unlocked)
+                        stage(unlocked: unlocked, width: geometry.size.width - 40)
                         caption(unlocked: unlocked)
                         if let finished = progress.finishedAt(quest) {
                             proof(finishedAt: finished)
                                 .padding(.top, 12)
                         }
                     }
-                    .padding(32)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 32)
+                    .padding(.top, 40) // clear of the close button
                     .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 }
                 .scrollBounceBehavior(.basedOnSize)
@@ -62,8 +64,20 @@ struct PrizeView: View {
     }
 
     /// The box, and the prize that rises out of it.
-    private func stage(unlocked: Bool) -> some View {
+    private func stage(unlocked: Bool, width: CGFloat) -> some View {
         let s = boxSize
+        let coupon = quest.prize.coupon
+        let couponWidth = min(width, 400)
+        let couponHeight = couponWidth * CouponView.aspect
+        // Once a coupon is out, the empty box shrinks to make room for it.
+        let openBoxScale: CGFloat = coupon == nil ? 1 : 0.6
+        // Where the prize comes to rest, measured up from the bottom of the box.
+        let prizeBottom = coupon == nil ? s * 0.5 : s * 0.5 * openBoxScale + 12
+        let prizeMiddle = coupon == nil ? s * 0.95 : prizeBottom + couponHeight / 2
+        let openHeight = coupon == nil ? s * 1.3 : prizeBottom + couponHeight + 8
+        // The glow sits behind the box until it opens, then spreads behind the prize.
+        let raysSize = coupon == nil ? s * 1.5 : couponWidth * 1.3
+        let glowSize = isOpen ? raysSize : s * 1.5
         return Button {
             if !unlocked {
                 lockedTaps += 1
@@ -73,26 +87,34 @@ struct PrizeView: View {
         } label: {
             ZStack(alignment: .bottom) {
                 Circle()
-                    .fill(RadialGradient(colors: [Color.questGold.opacity(0.45), .clear], center: .center, startRadius: 0, endRadius: s * 0.75))
-                    .frame(width: s * 1.5, height: s * 1.5)
-                    .offset(y: isOpen ? -s * 0.2 : s * 0.3)
+                    .fill(RadialGradient(colors: [Color.questGold.opacity(0.45), .clear], center: .center, startRadius: 0, endRadius: glowSize / 2))
+                    .frame(width: glowSize, height: glowSize)
+                    .offset(y: glowSize / 2 - (isOpen ? prizeMiddle : s * 0.45))
                     .opacity(unlocked ? 1 : 0)
 
                 if isOpen {
                     PrizeRays(spinning: !reduceMotion)
-                        .frame(width: s * 1.5, height: s * 1.5)
-                        .offset(y: -s * 0.2)
+                        .frame(width: raysSize, height: raysSize)
+                        .offset(y: raysSize / 2 - prizeMiddle)
                         .transition(.scale(scale: 0.2).combined(with: .opacity))
                 }
 
-                // Starts hidden inside the box, behind its front.
-                Image(systemName: quest.prize.symbol)
-                    .font(.system(size: s * 0.46))
-                    .foregroundStyle(LinearGradient(colors: [.questGoldLight, .questGold], startPoint: .top, endPoint: .bottom))
-                    .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
-                    .scaleEffect(isOpen ? 1 : 0.5, anchor: .bottom)
-                    .offset(y: isOpen ? -s * 0.56 : -s * 0.06)
-                    .opacity(isOpen ? 1 : 0)
+                // Starts small and hidden inside the box, behind its front.
+                switch quest.prize.item {
+                case .coupon(let coupon):
+                    CouponView(coupon: coupon, quest: quest, width: couponWidth)
+                        .scaleEffect(isOpen ? 1 : 0.2, anchor: .bottom)
+                        .offset(y: isOpen ? -prizeBottom : -s * 0.1)
+                        .opacity(isOpen ? 1 : 0)
+                case .badge(let symbol):
+                    Image(systemName: symbol)
+                        .font(.system(size: s * 0.46))
+                        .foregroundStyle(LinearGradient(colors: [.questGoldLight, .questGold], startPoint: .top, endPoint: .bottom))
+                        .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
+                        .scaleEffect(isOpen ? 1 : 0.5, anchor: .bottom)
+                        .offset(y: isOpen ? -s * 0.56 : -s * 0.06)
+                        .opacity(isOpen ? 1 : 0)
+                }
 
                 PrizeBox(size: s, isLocked: !unlocked, lidOff: isOpen)
                     .modifier(Wiggle(active: unlocked && !isOpen && !reduceMotion))
@@ -107,12 +129,20 @@ struct PrizeView: View {
                             CubicKeyframe(0, duration: 0.06)
                         }
                     }
+                    .scaleEffect(isOpen ? openBoxScale : 1, anchor: .bottom)
             }
-            .frame(width: s * 1.5, height: s * 1.3, alignment: .bottom)
+            .frame(width: max(s * 1.5, coupon == nil ? 0 : couponWidth), height: isOpen ? openHeight : s * 1.3, alignment: .bottom)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isOpen ? quest.prize.title : unlocked ? "Open the prize box" : "Prize box, locked")
+        .accessibilityLabel(isOpen ? coupon?.spokenDescription() ?? quest.prize.title : unlocked ? "Open the prize box" : "Prize box, locked")
+    }
+
+    private var prizeDetail: String {
+        if let coupon = quest.prize.coupon, coupon.isExpired() {
+            return "This coupon ran out after \(coupon.lastDayText)."
+        }
+        return quest.prize.detail
     }
 
     @ViewBuilder
@@ -121,7 +151,7 @@ struct PrizeView: View {
             if isOpen {
                 Text(quest.prize.title)
                     .font(.largeTitle.bold())
-                Text(quest.prize.detail)
+                Text(prizeDetail)
                     .font(.title3)
             } else if unlocked {
                 Text("Prize box unlocked!")
@@ -243,7 +273,7 @@ private struct PrizeRays: View {
                 }
             }
             .rotationEffect(.degrees(degrees))
-            .mask(RadialGradient(colors: [.white, .clear], center: .center, startRadius: 0, endRadius: 150))
+            .mask(EllipticalGradient(colors: [.white, .clear]))
         }
         .accessibilityHidden(true)
     }
