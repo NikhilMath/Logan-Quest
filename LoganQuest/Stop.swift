@@ -21,6 +21,12 @@ struct Stop: Identifiable, Hashable {
         URL(string: "https://maps.apple.com/?daddr=\(latitude),\(longitude)&dirflg=w")!
     }
 
+    /// Whether the answer unlocks the stop: one of its accepted answers, or the test code
+    /// ("1") in a build where that works.
+    @MainActor func unlocks(with answer: String) -> Bool {
+        accepts(answer) || TestUnlock.accepts(answer)
+    }
+
     func accepts(_ answer: String) -> Bool {
         let given = Stop.normalize(answer)
         return !given.isEmpty && acceptedAnswers.contains { Stop.normalize($0) == given }

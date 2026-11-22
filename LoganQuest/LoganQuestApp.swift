@@ -11,6 +11,7 @@ struct LoganQuestApp: App {
                 .environment(progress)
                 .environment(account)
                 .task { await account.confirmStillSignedIn() }
+                .task { await TestUnlock.checkBuild() }
                 .onChange(of: account.isSignedIn, initial: true) { _, signedIn in
                     progress.setSavesToCloud(signedIn)
                 }

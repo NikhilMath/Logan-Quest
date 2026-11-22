@@ -87,10 +87,10 @@ final class ProgressStore {
 
     // MARK: Changing
 
-    /// Marks the stop found if the answer is right. Returns whether it was.
+    /// Marks the stop found if the answer is right (or is the test code). Returns whether it was.
     @discardableResult
     func tryUnlock(_ stop: Stop, in quest: Quest, with answer: String) -> Bool {
-        guard stop.accepts(answer) else { return false }
+        guard stop.unlocks(with: answer) else { return false }
         if !isFound(stop, in: quest) {
             records[quest.id, default: QuestRecord()].finds[stop.id] = .now
             save()
