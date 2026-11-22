@@ -41,8 +41,8 @@ struct Quest: Identifiable, Hashable {
         return MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2, longitude: (minLon + maxLon) / 2),
             span: MKCoordinateSpan(
-                latitudeDelta: max((maxLat - minLat) * 1.7, 0.005),
-                longitudeDelta: max((maxLon - minLon) * 1.7, 0.005)
+                latitudeDelta: max((maxLat - minLat) * 1.4, 0.005),
+                longitudeDelta: max((maxLon - minLon) * 1.4, 0.005)
             )
         )
     }
