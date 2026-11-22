@@ -87,7 +87,7 @@ enum DebugScreen {
 }
 #endif
 
-/// The app's logo (Old Main tower artwork) and name.
+/// The app's logo (the app icon: L and Q drawn as one road) and name.
 private struct LogoHeader: View {
     var body: some View {
         HStack(spacing: 16) {

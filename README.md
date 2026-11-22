@@ -72,4 +72,4 @@ To add someone else on the developer team, open App Store Connect → Logan Ques
 
 ## Icon
 
-`Tools/icon/make_icon.py` draws the icon: LOGAN in cream over QUESTS in gold, on navy. Rerun it after editing, then copy the result to the `Logo` image set too (`sips -z 512 512 …`), which the home screen header uses. The script's docstring has both commands.
+`Tools/icon/make_icon.py` draws the icon: L and Q drawn as one road on red-rock orange. The L's road turns the corner into the Q, a roundabout with a gold flag on its island, and the Q's tail is a road leaving it. Rerun it after editing, then copy the result to the `Logo` image set too (`sips -z 512 512 …`), which the home screen header uses. The script's docstring has both commands.
