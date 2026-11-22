@@ -1,7 +1,8 @@
 import MapKit
 import SwiftUI
 
-/// One quest: the difficulty picker, the map of its stops and the list to unlock them.
+/// One quest: the difficulty picker, the map of its stops, its prize box and badges, and the
+/// list to unlock its stops.
 struct QuestView: View {
     let quest: Quest
 
@@ -130,6 +131,7 @@ struct QuestView: View {
                     PrizeBoxRow(route: route, found: progress.foundCount(on: route, in: quest))
                 }
                 .foregroundStyle(.primary)
+                QuestBadgesRow(quest: quest)
             }
 
             Section {

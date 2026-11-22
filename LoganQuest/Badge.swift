@@ -94,6 +94,64 @@ struct BadgesSection: View {
     private var earnedCount: Int { Badge.all.filter { progress.badges[$0.id] != nil }.count }
 }
 
+/// A quest's badges on its own screen, earned or not, so players see what each difficulty earns.
+struct QuestBadgesRow: View {
+    let quest: Quest
+    @Environment(ProgressStore.self) private var progress
+
+    var body: some View {
+        let earned = quest.badges.filter { progress.badges[$0.id] != nil }
+        HStack(spacing: 14) {
+            Image(systemName: "rosette")
+                .font(.title2)
+                .foregroundStyle(Color.accentColor)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Badges").font(.headline)
+                Text(summary(earned: earned.count))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 8)
+            HStack(alignment: .top, spacing: 6) {
+                ForEach(quest.badges) { badge in
+                    VStack(spacing: 2) {
+                        BadgeSeal(badge: badge, earned: progress.badges[badge.id] != nil, size: 28)
+                        if quest.hasDifficulties {
+                            Text(badge.name)
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .fixedSize()
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Badges")
+        .accessibilityValue(spokenValue)
+    }
+
+    /// "1 of 3 earned"
+    private func summary(earned: Int) -> String {
+        if quest.badges.count == 1 { return earned == 1 ? "Earned" : "Not earned yet" }
+        return "\(earned) of \(quest.badges.count) earned"
+    }
+
+    /// "Easy earned. Medium and Hard not earned yet."
+    private var spokenValue: String {
+        let earned = quest.badges.filter { progress.badges[$0.id] != nil }.map(\.name)
+        let notYet = quest.badges.filter { progress.badges[$0.id] == nil }.map(\.name)
+        return [
+            earned.isEmpty ? nil : "\(earned.formatted(.list(type: .and))) earned.",
+            notYet.isEmpty ? nil : "\(notYet.formatted(.list(type: .and))) not earned yet.",
+        ]
+        .compactMap { $0 }
+        .joined(separator: " ")
+    }
+}
+
 private struct BadgeTile: View {
     let badge: Badge
     let earnedAt: Date?
