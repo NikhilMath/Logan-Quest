@@ -39,7 +39,9 @@ something that doesn't build.
 
 - iPhone app (SwiftUI, iOS 18+), bundle ID `com.nikhilmath.loganquest`, Apple team
   `A5SDFXT5VB`. The home-screen and App Store name is **Logan Quest** (Nikhil renamed it from "Logan
-  Quests" on 2026-11-22; the SKU stays `loganquests`). The Xcode project and target are
+  Quests" on 2026-11-22; the SKU stays `loganquests`, since Apple doesn't let a SKU change).
+  Everything that shows the name, in the app, its images and the docs, says "Logan Quest" (or
+  "LOGAN QUEST"), never the plural. The Xcode project and target are
   still called `LoganQuest`. Don't change the team, bundle ID or entitlements in a
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:

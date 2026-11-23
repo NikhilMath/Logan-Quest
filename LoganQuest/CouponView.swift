@@ -67,7 +67,7 @@ struct CouponView: View {
 
     private func mainSide(w: CGFloat, expired: Bool) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("LOGAN QUESTS")
+            Text("LOGAN QUEST")
                 .font(.system(size: w * 0.028, weight: .heavy, design: .rounded))
                 .tracking(w * 0.004)
                 .foregroundStyle(Color.questGold)

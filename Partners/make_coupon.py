@@ -92,7 +92,7 @@ def draw():
 
     # Main side
     x0 = STUB + 90
-    tracked(d, (S(x0), S(110)), "LOGAN QUESTS", font(34, "Heavy"), GOLD, 5)
+    tracked(d, (S(x0), S(110)), "LOGAN QUEST", font(34, "Heavy"), GOLD, 5)
     # The business, as big as fits (up to 230) on a fixed baseline.
     business, size = "Your Business", 230
     while font(size).getlength(business) > S(W - 110 - (x0 - 8)):
