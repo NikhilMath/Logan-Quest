@@ -216,9 +216,9 @@ private extension Stop {
         address: "50 N Main St",
         latitude: 41.73235,
         longitude: -111.83423,
-        question: "Practice question: what's this building called?",
-        acceptedAnswers: ["Logan Tabernacle", "Tabernacle"],
-        hint: "It was finished being built in 1891."
+        // A real question (Nikhil, 2026-11-22): the Tabernacle was finished in 1891.
+        question: "What year was this building erected?",
+        acceptedAnswers: ["1891"]
     )
 
     static let courthouse = Stop(

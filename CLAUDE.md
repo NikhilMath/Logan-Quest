@@ -44,8 +44,9 @@ something that doesn't build.
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
-- The current questions are practice placeholders. Don't invent "real" ones (plaque wording
-  and so on). Nikhil collects those on foot.
+- The questions are practice placeholders, except the Logan Tabernacle's ("What year was this
+  building erected?", answer 1891), which Nikhil gave on 2026-11-22. Don't invent "real" ones
+  (plaque wording and so on). Nikhil collects those on foot.
 - Downtown Logan's prize box holds a generic coupon that reads "Your Business" and "Your offer
   here", so Nikhil can pitch it to more than one Logan business (he asked for this on
   2026-11-21, replacing the Handles coupon). Don't put in a business's name, offer or terms
@@ -234,7 +235,8 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   "the". Only put in real questions that Nikhil (or whoever walked there) gave you.
 - **Give a stop a hint:** set its `hint` in `Quest.swift` (leave it out for none). It stays
   hidden under the question until the player taps **Show Hint**. Same rule: only real facts
-  someone gave you, like the Tabernacle's "finished being built in 1891".
+  someone gave you, and never one that gives the answer away. No stop has a hint right now (the
+  Tabernacle's "finished being built in 1891" became its question's answer).
 - **Put a business on the coupon** (only once Nikhil says who signed on and gives the agreed
   wording): set `business` and `offer`, and any new `terms` or `lastDay`, in the `prize` in
   `Quest.swift` (and its `title` and `detail`), make the same changes in
