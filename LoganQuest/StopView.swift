@@ -11,6 +11,7 @@ struct StopView: View {
     @State private var answer = ""
     @State private var wrongTries = 0
     @State private var justUnlocked = false
+    @State private var showingHint = false
     @FocusState private var answerFocused: Bool
 
     var body: some View {
@@ -41,6 +42,16 @@ struct StopView: View {
                         } else if wrongTries > 0 {
                             Text("Not quite. Look around and try again.")
                                 .foregroundStyle(.red)
+                        }
+                        if let hint = stop.hint {
+                            if showingHint {
+                                Label(hint, systemImage: "lightbulb.fill")
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                Button("Show Hint", systemImage: "lightbulb") {
+                                    withAnimation { showingHint = true }
+                                }
+                            }
                         }
                     }
                     Section {

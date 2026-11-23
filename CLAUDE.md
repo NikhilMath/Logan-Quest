@@ -232,6 +232,9 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
 - **Change a stop's question or answers:** edit it in `Quest.swift`. List every spelling to
   accept in `acceptedAnswers`. Matching already ignores case, punctuation, accents and a leading
   "the". Only put in real questions that Nikhil (or whoever walked there) gave you.
+- **Give a stop a hint:** set its `hint` in `Quest.swift` (leave it out for none). It stays
+  hidden under the question until the player taps **Show Hint**. Same rule: only real facts
+  someone gave you, like the Tabernacle's "finished being built in 1891".
 - **Put a business on the coupon** (only once Nikhil says who signed on and gives the agreed
   wording): set `business` and `offer`, and any new `terms` or `lastDay`, in the `prize` in
   `Quest.swift` (and its `title` and `detail`), make the same changes in

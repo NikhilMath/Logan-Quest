@@ -11,6 +11,8 @@ struct Stop: Identifiable, Hashable {
     let question: String
     /// Any of these unlocks the stop. Matching ignores case, punctuation, accents and a leading "the".
     let acceptedAnswers: [String]
+    /// Shown under the question only when the player taps Show Hint. Leave it out for no hint.
+    var hint: String? = nil
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
