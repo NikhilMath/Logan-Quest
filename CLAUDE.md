@@ -250,8 +250,13 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   saves five 1320×2868 PNGs in `AppStore/Screenshots`; Nikhil uploads them in App Store Connect →
   Distribution → App Previews and Screenshots. Retake them whenever a pictured screen changes.
 - **Before launch** (open items): real questions, checking the map pins, timing the walk, a
-  business and offer for the coupon, then retaking the screenshots. The README's "Before launch" section has the
-  details.
+  business and offer for the coupon, then retaking the screenshots and filling in the App
+  Store listing. The README's "Before launch" section has the details.
+- **App Store listing:** the drafts are in `AppStore/` (`listing.md`, `review-notes.md`, and the
+  public `privacy.md` and `support.md` that the Privacy Policy and Support URLs point to).
+  When a change affects what they say (what the app saves, the stops, walking times, the
+  coupon, the test unlock), update them in the same commit. The privacy policy must stay true
+  to what the app actually saves and sends.
 
 ## When something goes wrong
 
