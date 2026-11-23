@@ -117,6 +117,6 @@ keywords.
 | Screenshots | The five in `AppStore/Screenshots`, in order, retaken once the questions and coupon are real |
 | Copyright | **Fill in:** `2026` and your name (or your company's) |
 | Sign-in required | No (leave the user name and password blank: Sign in with Apple is optional) |
-| App Review contact | **Fill in:** your name, phone and email (only Apple sees these) |
+| App Review contact | **Fill in:** your name and phone, and erulemath@gmail.com (only Apple sees these) |
 | App Review notes | Paste the text from `AppStore/review-notes.md` |
 | Version release | **Manually release this version**, so the app goes live when the business is ready |

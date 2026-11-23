@@ -63,4 +63,4 @@ If this policy changes, the new version will be posted here with a new date at t
 
 ## Contact
 
-Questions about privacy: **[CONTACT EMAIL]**
+Questions about privacy: [erulemath@gmail.com](mailto:erulemath@gmail.com)

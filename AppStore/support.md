@@ -3,7 +3,7 @@
 Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt. Walk to each stop,
 answer its question, and open the prize box once you've found them all.
 
-Need help? Email **[CONTACT EMAIL]**.
+Need help? Email [erulemath@gmail.com](mailto:erulemath@gmail.com).
 
 ## Common questions
 
