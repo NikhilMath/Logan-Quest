@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+	The privacy manifest Apple reads when the app is uploaded. Keep it true to what the app does
+	(and to AppStore/privacy.md and the App Privacy answers in AppStore/listing.md):
+	- No tracking and no data collected: nothing leaves the iPhone except to the player's own iCloud.
+	- UserDefaults (CA92.1): progress, sign-in and the picked difficulty, read and written only by
+	  this app. It's the only API on Apple's "required reason" list the app uses. If code starts
+	  using another one (file timestamps, system boot time, disk space, active keyboards), add it
+	  here with its reason.
+-->
+<plist version="1.0">
+<dict>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

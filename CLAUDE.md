@@ -65,6 +65,12 @@ something that doesn't build.
 - Deleting the app and downloading it again must keep everything. Progress, badges and the sign-in
   (`AccountStore`) are also saved in the keychain (`Keychain.swift`), which iOS keeps when an
   app is deleted. Anything new that gets saved needs a keychain copy too.
+- Privacy: no tracking, analytics, ads or server, and nothing leaves the phone except to the
+  player's own iCloud. `LoganQuest/PrivacyInfo.xcprivacy` (the privacy manifest Apple reads on
+  upload) says so and declares the one "required reason" API the app uses, UserDefaults
+  (`CA92.1`). If code starts using another API on Apple's list (file timestamps, system boot
+  time, disk space, active keyboards) or sends data anywhere, update the manifest,
+  `AppStore/privacy.md` and the App Privacy answers in `AppStore/listing.md` in the same commit.
 - Resetting progress must keep its two warnings (the `ResetProgressView` page, then the alert).
 - Layout must keep working on iPhone Duo (wide inner screen): no `UIRequiresFullScreen`, all
   orientations, map beside the list in regular width. Nikhil's own test phone is an iPhone Duo.
