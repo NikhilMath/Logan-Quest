@@ -163,7 +163,8 @@ private struct BadgeTile: View {
                 Text(badge.name)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(earnedAt == nil ? .secondary : .primary)
-                Text(earnedAt?.formatted(date: .abbreviated, time: .omitted) ?? "Not yet")
+                Text(earnedAt?.formatted(date: .abbreviated, time: .omitted)
+                     ?? (badge.route.isComingSoon ? "Coming soon" : "Not yet"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -176,7 +177,9 @@ private struct BadgeTile: View {
 
     private var accessibilityText: String {
         let name = badge.quest.hasDifficulties ? "\(badge.quest.title) \(badge.name)" : badge.name
-        guard let earnedAt else { return "\(name) badge, not earned yet" }
+        guard let earnedAt else {
+            return "\(name) badge, \(badge.route.isComingSoon ? "coming soon" : "not earned yet")"
+        }
         return "\(name) badge, earned \(earnedAt.formatted(date: .long, time: .omitted))"
     }
 }

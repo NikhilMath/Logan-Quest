@@ -49,6 +49,11 @@ something that doesn't build.
 - The questions are practice placeholders, except the Logan Tabernacle's ("What year was this
   building erected?", answer 1891), which Nikhil gave on 2026-11-22. Don't invent "real" ones
   (plaque wording and so on). Nikhil collects those on foot.
+- Downtown Logan's Medium and Hard are coming soon (Nikhil asked on 2026-11-25): their routes
+  have `isComingSoon: true`, so picking one shows a "Coming Soon" panel instead of its map,
+  stops and prize box, and everywhere else uses Easy. Keep them that way until Nikhil says one
+  is ready; to open it, delete its `isComingSoon: true` and update the App Store drafts in
+  `AppStore/`, which leave Medium and Hard out of the listing for now.
 - Downtown Logan's prize box holds a generic coupon that reads "Your Business" and "Your offer
   here", so Nikhil can pitch it to more than one Logan business (he asked for this on
   2026-11-21, replacing the Handles coupon). Don't put in a business's name, offer or terms
@@ -184,7 +189,7 @@ and its badges with just the ones those finds earn).
 Deleting the app from a simulator doesn't clear its progress, badges or sign-in (the keychain keeps
 them): use `-LQFound 0` and the Sign Out button instead. Add `-LQDifficulty easy`, `medium` or
 `hard` to pick Downtown Logan's difficulty first (it stays picked); `-LQFound` counts along that
-difficulty's route. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
+difficulty's route, or Easy's while that difficulty is coming soon. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
 one, in both orientations.
 
 To unlock a stop without its real answer, type `1`. That works in Xcode and TestFlight builds
@@ -231,7 +236,8 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   `.coupon(…)`) and a `badgeSymbol` (an SF Symbol for the badges its routes earn). Only add a coupon for a business Nikhil has said yes to. Each route is a
   difficulty (easy, medium, hard) with its stops in walking order; one route means no difficulty
   picker. Routes share `Stop` values, so a stop found on one difficulty counts on the others.
-  Downtown Logan has all three: Medium is Easy plus 4 stops, Hard is Medium plus 6. To get each
+  Downtown Logan has all three: Medium is Easy plus 4 stops, Hard is Medium plus 6 (Medium and
+  Hard are coming soon for now; a route's `isComingSoon` does that). To get each
   stop's address and coordinates and a loop's walking time from Apple Maps:
 
   ```bash

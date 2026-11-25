@@ -20,9 +20,13 @@ struct Quest: Identifiable, Hashable {
 
     var hasDifficulties: Bool { routes.count > 1 }
 
-    /// The route for a difficulty, or the easiest one if the quest doesn't have that difficulty.
+    /// The routes players can walk now, easiest first: every route that isn't coming soon.
+    var openRoutes: [Route] { routes.filter { !$0.isComingSoon } }
+
+    /// The route for a difficulty, or the easiest open one if the quest doesn't have that
+    /// difficulty or it's coming soon.
     func route(_ difficulty: Difficulty?) -> Route {
-        routes.first { $0.difficulty == difficulty } ?? routes[0]
+        openRoutes.first { $0.difficulty == difficulty } ?? openRoutes.first ?? routes[0]
     }
 
     /// Every stop on any route, each once: the easiest route's stops first, then each harder
@@ -63,6 +67,10 @@ struct Route: Identifiable, Hashable {
     /// Measure with `Tools/walk_time.swift` whenever the stops change.
     let walkingMinutes: Int
     let walkingMeters: Double
+    /// Shows "Coming soon" in the difficulty picker and can't be played: its map, stops and
+    /// prize box stay hidden, and everywhere else uses the easiest open route instead. Delete
+    /// it from the route to open it. Never set it on a quest's first route.
+    var isComingSoon = false
 
     var id: Difficulty { difficulty }
 
@@ -171,7 +179,9 @@ extension Quest {
                 ],
                 // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
                 walkingMinutes: 30,
-                walkingMeters: 2225
+                walkingMeters: 2225,
+                // Nikhil, 2026-11-25: Medium and Hard say "Coming soon" until they're ready.
+                isComingSoon: true
             ),
             Route(
                 difficulty: .hard,
@@ -183,7 +193,8 @@ extension Quest {
                 ],
                 // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "Umbrella Alley Logan" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
                 walkingMinutes: 72,
-                walkingMeters: 5257
+                walkingMeters: 5257,
+                isComingSoon: true
             ),
         ],
         // A generic coupon for pitching to Logan businesses. Once one signs on, put in its

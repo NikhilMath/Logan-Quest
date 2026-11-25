@@ -15,7 +15,7 @@ Type 1 as the answer to any stop and tap Unlock. This shortcut works only in Tes
 
 A QUICK WAY THROUGH THE APP
 1. On the home screen, tap Downtown Logan.
-2. Leave the difficulty on Easy (5 stops).
+2. Leave the difficulty on Easy (5 stops). Medium and Hard say "Coming Soon" and can't be played yet.
 3. Tap a stop, type 1 and tap Unlock. Do the same for the other four stops.
 4. After the last stop, the Quest complete screen opens. Tap "Open your prize box", then tap the box to see the coupon.
 5. Back on the home screen, tap My Progress to see the badge you earned, and the Reset options.

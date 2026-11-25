@@ -22,7 +22,13 @@ struct QuestView: View {
         _mapPosition = State(initialValue: .region(quest.route(difficulty.wrappedValue).region))
     }
 
+    /// The picked route, or the easiest open one when the picked one is coming soon.
     private var route: Route { quest.route(difficulty) }
+
+    /// The picked route when it's coming soon: the screen says so in place of its map and stops.
+    private var comingSoonRoute: Route? {
+        quest.routes.first { $0.difficulty == difficulty && $0.isComingSoon }
+    }
 
     private var selectedStop: Binding<Stop?> {
         Binding(
@@ -83,7 +89,8 @@ struct QuestView: View {
 
     private var questMap: some View {
         Map(position: $mapPosition, selection: $selectedStopID) {
-            ForEach(Array(route.stops.enumerated()), id: \.element.id) { index, stop in
+            // No pins for a difficulty that's coming soon (the map shows beside the list on wide screens).
+            ForEach(Array((comingSoonRoute == nil ? route.stops : []).enumerated()), id: \.element.id) { index, stop in
                 if progress.isFound(stop, in: quest) {
                     Marker(stop.name, systemImage: "checkmark", coordinate: stop.coordinate)
                         .tint(Color.green)
@@ -115,60 +122,104 @@ struct QuestView: View {
                 }
             }
 
-            if showsMap {
+            if let comingSoonRoute {
                 Section {
-                    questMap
-                        .frame(height: 300)
-                        .listRowInsets(EdgeInsets())
+                    ComingSoonRow(difficulty: comingSoonRoute.difficulty, openNow: quest.openRoutes.map(\.difficulty))
                 }
+            } else {
+                routeSections(showsMap: showsMap)
             }
+        }
+    }
 
+    /// The picked route's map, walk, prize box, badges and stops.
+    @ViewBuilder
+    private func routeSections(showsMap: Bool) -> some View {
+        if showsMap {
             Section {
-                WalkSummary(route: route)
+                questMap
+                    .frame(height: 300)
+                    .listRowInsets(EdgeInsets())
+            }
+        }
+
+        Section {
+            WalkSummary(route: route)
+            Button {
+                showingPrize = true
+            } label: {
+                PrizeBoxRow(route: route, found: progress.foundCount(on: route, in: quest))
+            }
+            .foregroundStyle(.primary)
+            QuestBadgesRow(quest: quest)
+        }
+
+        Section {
+            ForEach(Array(route.stops.enumerated()), id: \.element.id) { index, stop in
                 Button {
-                    showingPrize = true
+                    selectedStopID = stop.id
                 } label: {
-                    PrizeBoxRow(route: route, found: progress.foundCount(on: route, in: quest))
+                    StopRow(stop: stop, number: index + 1, found: progress.isFound(stop, in: quest))
                 }
                 .foregroundStyle(.primary)
-                QuestBadgesRow(quest: quest)
             }
+        } header: {
+            Text("\(progress.foundCount(on: route, in: quest)) of \(route.stops.count) stops found")
+        } footer: {
+            if !progress.isComplete(route, in: quest) {
+                Text("Walk to each stop and answer its question to unlock it.")
+            }
+        }
 
+        if progress.isComplete(route, in: quest) {
             Section {
-                ForEach(Array(route.stops.enumerated()), id: \.element.id) { index, stop in
-                    Button {
-                        selectedStopID = stop.id
-                    } label: {
-                        StopRow(stop: stop, number: index + 1, found: progress.isFound(stop, in: quest))
-                    }
-                    .foregroundStyle(.primary)
-                }
-            } header: {
-                Text("\(progress.foundCount(on: route, in: quest)) of \(route.stops.count) stops found")
-            } footer: {
-                if !progress.isComplete(route, in: quest) {
-                    Text("Walk to each stop and answer its question to unlock it.")
-                }
-            }
-
-            if progress.isComplete(route, in: quest) {
-                Section {
-                    Button {
-                        showingComplete = true
-                    } label: {
-                        Label("Show quest complete screen", systemImage: "checkmark.seal.fill")
-                    }
+                Button {
+                    showingComplete = true
+                } label: {
+                    Label("Show quest complete screen", systemImage: "checkmark.seal.fill")
                 }
             }
         }
     }
 
-    /// "Easy has 5 stops, Medium 9 and Hard 15. A stop you find counts on every difficulty."
+    /// "Easy has 5 stops, Medium 9 and Hard 15. A stop you find counts on every difficulty.",
+    /// or "Easy has 5 stops. Medium and Hard are coming soon."
     private var difficultyFooter: String {
-        let counts = quest.routes.enumerated().map { index, route in
+        let open = quest.openRoutes.enumerated().map { index, route in
             index == 0 ? "\(route.difficulty.title) has \(route.stops.count) stops" : "\(route.difficulty.title) \(route.stops.count)"
         }
-        return "\(counts.formatted(.list(type: .and))). A stop you find counts on every difficulty."
+        let soon = quest.routes.filter(\.isComingSoon).map(\.difficulty.title)
+        return [
+            "\(open.formatted(.list(type: .and))).",
+            soon.isEmpty ? nil : "\(soon.formatted(.list(type: .and))) \(soon.count == 1 ? "is" : "are") coming soon.",
+            open.count > 1 ? "A stop you find counts on every difficulty." : nil,
+        ]
+        .compactMap { $0 }
+        .joined(separator: " ")
+    }
+}
+
+/// In place of the map and stops when the picked difficulty isn't ready yet.
+private struct ComingSoonRow: View {
+    let difficulty: Difficulty
+    /// The difficulties that can be played now.
+    let openNow: [Difficulty]
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "hourglass")
+                .font(.system(size: 44))
+                .foregroundStyle(Color.accentColor)
+            Text("Coming Soon")
+                .font(.title2.bold())
+            Text("\(difficulty.title) isn't ready yet. Pick \(openNow.map(\.title).formatted(.list(type: .or))) to play now.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 24)
+        .accessibilityElement(children: .combine)
     }
 }
 

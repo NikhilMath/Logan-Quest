@@ -65,13 +65,14 @@ identifier and first name stay on the phone the same way. The privacy policy say
 ### Promotional text (170)
 
 ```
-Walk downtown Logan, answer a question at every stop, and open the prize box at the end. Pick Easy, Medium or Hard.
+Walk downtown Logan, answer a question at every stop, and open the prize box at the end.
 ```
 
 ### Description (4000)
 
 **Fill in** the business and offer in the PRIZE BOX paragraph once one signs on, and change
-the walking times if the timed walks come out different from Apple Maps' estimates.
+the walking times if the timed walks come out different from Apple Maps' estimates. Medium and
+Hard are left out while the app says they're coming soon; add them back once they open.
 
 ```
 Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt.
@@ -79,18 +80,13 @@ Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt.
 Walk from stop to stop and answer a question at each one. Every question is about something you can only see when you're standing there, so you'll have to go and look. Find every stop to open the prize box at the end.
 
 DOWNTOWN LOGAN
-Start and finish at the Logan Tabernacle, and pick how far you want to go:
-• Easy: 5 stops, about 20 minutes
-• Medium: 9 stops, about 30 minutes
-• Hard: 15 stops, about 70 minutes
-
-Along the way you'll pass Umbrella Alley, the Ellen Eccles Theatre, the Thatcher-Young Mansion, the Cache Pioneer Museum, the Logan Utah Temple and more. A stop you find counts on every difficulty.
+Start and finish at the Logan Tabernacle: 5 stops, about 20 minutes. Along the way you'll pass the Old Cache County Courthouse, Umbrella Alley, the Thatcher-Young Mansion and the Ellen Eccles Theatre.
 
 THE PRIZE BOX
 Find every stop on your route and the prize box opens. Inside is a coupon from [BUSINESS]: [OFFER]. Show it at the counter. The ticking clock on it shows it's not a screenshot.
 
 BADGES
-Earn a badge for each difficulty you finish. Badges stay, even if you reset your progress and play again.
+Earn a badge when you finish. Badges stay, even if you reset your progress and play again.
 
 YOUR PROGRESS
 • See every stop on a map, and get walking directions to it in Apple Maps.

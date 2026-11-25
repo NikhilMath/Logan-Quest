@@ -77,7 +77,7 @@ private struct QuestProgressSection: View {
 
     var body: some View {
         Section {
-            ForEach(quest.allStops) { stop in
+            ForEach(shownStops) { stop in
                 let found = progress.foundDate(stop, in: quest)
                 HStack {
                     Image(systemName: found == nil ? "circle" : "checkmark.circle.fill")
@@ -109,13 +109,21 @@ private struct QuestProgressSection: View {
         }
     }
 
-    /// One line per difficulty: "Medium: 6 of 9 stops found."
+    /// The stops on routes that can be played now, plus any found already, so stops only on a
+    /// coming-soon route stay a surprise.
+    private var shownStops: [Stop] {
+        let open = Set(quest.openRoutes.flatMap(\.stops))
+        return quest.allStops.filter { open.contains($0) || progress.isFound($0, in: quest) }
+    }
+
+    /// One line per difficulty: "Medium: 6 of 9 stops found." or "Medium: Coming soon."
     private var status: String {
         quest.routes.map { route in
             let level = quest.hasDifficulties ? "\(route.difficulty.title): " : ""
             if let finished = progress.finishedAt(route, in: quest) {
                 return level + "Completed \(finished.formatted(date: .long, time: .shortened))."
             }
+            if route.isComingSoon { return level + "Coming soon." }
             let found = progress.foundCount(on: route, in: quest)
             return level + (found > 0 ? "\(found) of \(route.stops.count) stops found." : "Not started yet.")
         }

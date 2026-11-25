@@ -16,8 +16,9 @@ tap it.
 Tap the stop, then **Walking Directions** to open it in Apple Maps. The stops are in walking
 order, and the loop ends back where it started.
 
-**Does a stop I found on Easy count on Medium or Hard?**
-Yes. A stop you find counts on every difficulty that has it.
+**Can I play Medium or Hard?**
+Not yet. They're coming soon. Once they open, the stops you've found on Easy will count on them
+too.
 
 **How do I use the coupon?**
 Open the prize box and show the coupon at the business's counter before the date on it. The
