@@ -80,7 +80,7 @@ struct QuestView: View {
             showingComplete = DebugScreen.current == "complete"
             showingPrize = DebugScreen.current?.hasPrefix("prize") == true
             if DebugScreen.current == "stop" {
-                // The first stop not found yet, so its question shows.
+                // The first stop not found yet, so its riddle shows.
                 selectedStopID = (route.stops.first { !progress.isFound($0, in: quest) } ?? route.stops[0]).id
             }
         }
@@ -167,7 +167,7 @@ struct QuestView: View {
             Text("\(progress.foundCount(on: route, in: quest)) of \(route.stops.count) stops found")
         } footer: {
             if !progress.isComplete(route, in: quest) {
-                Text("Walk to each stop and answer its question to unlock it.")
+                Text("Walk to each stop and solve its riddle to unlock it.")
             }
         }
 

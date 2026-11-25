@@ -4,8 +4,8 @@ Everything to fill in under App Store Connect → Logan Quest → Distribution b
 the first version for review. The text is ready to paste. Lines marked **Fill in** need a
 decision from Nikhil first.
 
-**Don't submit until the questions and the coupon are real.** Apple rejects apps with
-placeholder content, and both the "Practice question:" stops and the "Your Business / Your offer
+**Don't submit until the riddles and the coupon are real.** Apple rejects apps with
+placeholder content, and both the "Practice riddle:" stops and the "Your Business / Your offer
 here" coupon count. Retake the screenshots after that (`Tools/screenshots.sh`).
 
 Character limits are App Store Connect's. Everything below fits.
@@ -65,7 +65,7 @@ identifier and first name stay on the phone the same way. The privacy policy say
 ### Promotional text (170)
 
 ```
-Walk downtown Logan, answer a question at every stop, and open the prize box at the end.
+Walk downtown Logan, solve a riddle at every stop, and open the prize box at the end.
 ```
 
 ### Description (4000)
@@ -77,7 +77,7 @@ Hard are left out while the app says they're coming soon; add them back once the
 ```
 Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt.
 
-Walk from stop to stop and answer a question at each one. Every question is about something you can only see when you're standing there, so you'll have to go and look. Find every stop to open the prize box at the end.
+Walk from stop to stop and solve a riddle at each one. Every answer is something you can only see when you're standing there, so you'll have to go and look. Stuck? Tap Show Hint to see the riddle asked as a plain question. Find every stop to open the prize box at the end.
 
 DOWNTOWN LOGAN
 Start and finish at the Logan Tabernacle: 5 stops, about 15 minutes. Along the way you'll pass the Old Cache County Courthouse, Center Street, the Thatcher-Young Mansion and the Ellen Eccles Theatre.
@@ -110,7 +110,7 @@ keywords.
 | --- | --- |
 | Support URL | https://github.com/NikhilMath/Logan-Quest/blob/main/AppStore/support.md |
 | Marketing URL | Leave blank (optional) |
-| Screenshots | The five in `AppStore/Screenshots`, in order, retaken once the questions and coupon are real |
+| Screenshots | The five in `AppStore/Screenshots`, in order, retaken once the riddles and coupon are real |
 | Copyright | **Fill in:** `2026` and your name (or your company's) |
 | Sign-in required | No (leave the user name and password blank: Sign in with Apple is optional) |
 | App Review contact | **Fill in:** your name and phone, and erulemath@gmail.com (only Apple sees these) |

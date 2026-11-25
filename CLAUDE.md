@@ -46,7 +46,9 @@ something that doesn't build.
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
-- The questions are practice placeholders, except Easy's seven, which Nikhil gave: the Logan Tabernacle's
+- Every stop has a riddle (`riddle`) to solve, and a hint (`hint`, hidden until the player taps
+  **Show Hint**) that asks the same thing as a plain question (Nikhil asked for this on
+  2026-11-25). The questions are practice placeholders, except Easy's seven, which Nikhil gave: the Logan Tabernacle's
   ("What year was this building erected?", answer 1891, on 2026-11-22), and on 2026-11-25 the
   Old Cache County Courthouse's ("How many kids did David Eccles have with Ellen Eccles?",
   answer 9), Laub Plaza's ("Which foundation donated the fire pit?", answer the Measom Family
@@ -54,7 +56,9 @@ something that doesn't build.
   2019), the Thatcher-Young Mansion's ("What was Logan High originally named?", answer
   Brigham Young College), the Lucky Slice Mural's ("How many people are depicted in the
   mural?", answer 5) and the Ellen Eccles Theatre's ("How many recessed lights are in the
-  ceiling over the front entrance?", answer 8). Don't invent "real" ones (plaque wording and so on). Nikhil collects those on foot.
+  ceiling over the front entrance?", answer 8). Their riddles were written from those questions,
+  with the same answers. The other stops' riddles start "Practice riddle:". Don't invent "real"
+  ones (plaque wording and so on). Nikhil collects those on foot.
 - Stops should be there all year. Center Street replaced Umbrella Alley on 2026-11-25 because
   its umbrellas come down in winter; its id `umbrella-alley` is retired, so never reuse it.
 - Downtown Logan's Medium and Hard are coming soon (Nikhil asked on 2026-11-25): their routes
@@ -252,13 +256,12 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Carol and Jim Laub Plaza Logan" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
   ```
 
-- **Change a stop's question or answers:** edit it in `Quest.swift`. List every spelling to
-  accept in `acceptedAnswers`. Matching already ignores case, punctuation, accents and a leading
-  "the". Only put in real questions that Nikhil (or whoever walked there) gave you.
-- **Give a stop a hint:** set its `hint` in `Quest.swift` (leave it out for none). It stays
-  hidden under the question until the player taps **Show Hint**. Same rule: only real facts
-  someone gave you, and never one that gives the answer away. No stop has a hint right now (the
-  Tabernacle's "finished being built in 1891" became its question's answer).
+- **Change a stop's riddle, hint or answers:** edit it in `Quest.swift`. The `riddle` is what
+  the player solves. The `hint` stays hidden under it until they tap **Show Hint**, and is the
+  plain question (the one Nikhil, or whoever walked there, gave you). Write the riddle from that
+  question so it takes the same answer, using only facts someone gave you, and never give the
+  answer away in either. List every spelling to accept in `acceptedAnswers`. Matching already
+  ignores case, punctuation, accents and a leading "the".
 - **Put a business on the coupon** (only once Nikhil says who signed on and gives the agreed
   wording): set `business` and `offer`, and any new `terms` or `lastDay`, in the `prize` in
   `Quest.swift` (and its `title` and `detail`), make the same changes in
@@ -271,7 +274,7 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
 - **Retake the App Store screenshots:** `Tools/screenshots.sh` (any Mac, no Apple account). It
   saves five 1320×2868 PNGs in `AppStore/Screenshots`; Nikhil uploads them in App Store Connect →
   Distribution → App Previews and Screenshots. Retake them whenever a pictured screen changes.
-- **Before launch** (open items): real questions, checking the map pins, timing the walk, a
+- **Before launch** (open items): real riddles for the Medium and Hard stops, checking the map pins, timing the walk, a
   business and offer for the coupon, then retaking the screenshots and filling in the App
   Store listing. The README's "Before launch" section has the details.
 - **App Store listing:** the drafts are in `AppStore/` (`listing.md`, `review-notes.md`, and the

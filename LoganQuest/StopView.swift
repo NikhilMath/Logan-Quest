@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A stop's details and the question that unlocks it.
+/// A stop's details and the riddle that unlocks it.
 struct StopView: View {
     let stop: Stop
     let quest: Quest
@@ -24,7 +24,7 @@ struct StopView: View {
                     }
                 }
 
-                // Just unlocked: the question stays up, outlined green, until the sheet closes.
+                // Just unlocked: the riddle stays up, outlined green, until the sheet closes.
                 if progress.isFound(stop, in: quest) && !justUnlocked {
                     Section {
                         Label("Unlocked", systemImage: "checkmark.seal.fill")
@@ -32,8 +32,8 @@ struct StopView: View {
                             .foregroundStyle(.green)
                     }
                 } else {
-                    Section("Question") {
-                        Text(stop.question)
+                    Section("Riddle") {
+                        Text(stop.riddle)
                         answerField
                         if justUnlocked {
                             Label("Unlocked!", systemImage: "checkmark.seal.fill")

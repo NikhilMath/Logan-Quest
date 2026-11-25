@@ -1,17 +1,19 @@
 import CoreLocation
 import Foundation
 
-/// One place on a quest. Players unlock it by answering a question only someone standing there would know.
+/// One place on a quest. Players unlock it by solving a riddle whose answer only someone standing there would know.
 struct Stop: Identifiable, Hashable {
     let id: String
     let name: String
     let address: String
     let latitude: Double
     let longitude: Double
-    let question: String
+    /// What the player has to solve. Its answer is something only someone standing there would know.
+    let riddle: String
     /// Any of these unlocks the stop. Matching ignores case, punctuation, accents and a leading "the".
     let acceptedAnswers: [String]
-    /// Shown under the question only when the player taps Show Hint. Leave it out for no hint.
+    /// Shown under the riddle only when the player taps Show Hint: the riddle asked as a plain
+    /// question. Leave it out for no hint.
     var hint: String? = nil
 
     var coordinate: CLLocationCoordinate2D {

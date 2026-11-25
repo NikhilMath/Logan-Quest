@@ -8,7 +8,7 @@ Typing `Nikhil` works for them because App Review builds run in the same sandbox
 (`TestUnlock.swift`). The App Store version still turns it off.
 
 ```
-Logan Quest is a walking scavenger hunt in downtown Logan, Utah. Each stop asks a question about something you can only see when you're standing there, so players have to visit every stop.
+Logan Quest is a walking scavenger hunt in downtown Logan, Utah. Each stop has a riddle about something you can only see when you're standing there (Show Hint asks it as a plain question), so players have to visit every stop.
 
 TESTING WITHOUT TRAVELING TO LOGAN
 Type Nikhil as the answer to any stop and tap Unlock. This shortcut works only in TestFlight and App Review builds. The App Store version turns it off, so real players have to visit the stops.

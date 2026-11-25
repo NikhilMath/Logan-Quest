@@ -215,9 +215,12 @@ extension Quest {
 }
 
 // Downtown Logan's stops. Addresses and coordinates are from Apple Maps.
-// The questions are PRACTICE placeholders so the unlock flow can be tested.
-// Replace each one with a real question and answer from the downtown walk
-// (something only someone standing there would know, like what's carved on a plaque).
+// Each stop has a riddle, and its hint asks the same thing as a plain question (Nikhil asked
+// for this on 2026-11-25). Easy's seven are real: Nikhil gave the questions, and the riddles
+// were written from them, with the same answers. The rest, on the stops only Medium and Hard
+// visit, are PRACTICE placeholders so the unlock flow can be tested. Replace each with a real
+// riddle and answer from the downtown walk (something only someone standing there would know,
+// like what's carved on a plaque).
 private extension Stop {
     // Easy, and every route after it.
 
@@ -227,9 +230,10 @@ private extension Stop {
         address: "50 N Main St",
         latitude: 41.73235,
         longitude: -111.83423,
-        // A real question (Nikhil, 2026-11-22): the Tabernacle was finished in 1891.
-        question: "What year was this building erected?",
-        acceptedAnswers: ["1891"]
+        // Real (Nikhil, 2026-11-22): the Tabernacle was finished in 1891.
+        riddle: "Many hands worked year by year\nuntil my walls were finished here.\nIn what year was that?",
+        acceptedAnswers: ["1891"],
+        hint: "What year was this building erected?"
     )
 
     static let courthouse = Stop(
@@ -238,9 +242,10 @@ private extension Stop {
         address: "199 N Main St",
         latitude: 41.73479,
         longitude: -111.83567,
-        // A real question (Nikhil, 2026-11-25).
-        question: "How many kids did David Eccles have with Ellen Eccles?",
-        acceptedAnswers: ["9", "nine"]
+        // Real (Nikhil, 2026-11-25). "Her name" is the Ellen Eccles Theatre's, the last stop.
+        riddle: "A theatre on this walk bears her name.\nShe and David had children. How many came?",
+        acceptedAnswers: ["9", "nine"],
+        hint: "How many kids did David Eccles have with Ellen Eccles?"
     )
 
     static let laubPlaza = Stop(
@@ -249,9 +254,10 @@ private extension Stop {
         address: "55 N Main St",
         latitude: 41.73246,
         longitude: -111.83545,
-        // A real question (Nikhil, 2026-11-25).
-        question: "Which foundation donated the fire pit?",
-        acceptedAnswers: ["Measom Family Foundation", "Measom Family", "Measom Foundation", "Measom"]
+        // Real (Nikhil, 2026-11-25).
+        riddle: "I keep a fire for chilly hands,\na gift to the plaza where I stand.\nWhich foundation gave me?",
+        acceptedAnswers: ["Measom Family Foundation", "Measom Family", "Measom Foundation", "Measom"],
+        hint: "Which foundation donated the fire pit?"
     )
 
     static let luckySlice = Stop(
@@ -260,9 +266,10 @@ private extension Stop {
         address: "37 W Center St",
         latitude: 41.73154,
         longitude: -111.83601,
-        // A real question (Nikhil, 2026-11-25).
-        question: "How many people are depicted in the mural?",
-        acceptedAnswers: ["5", "five"]
+        // Real (Nikhil, 2026-11-25).
+        riddle: "They never blink and never roam;\nthis painted wall is their whole home.\nHow many people live here?",
+        acceptedAnswers: ["5", "five"],
+        hint: "How many people are depicted in the mural?"
     )
 
     // Replaced Umbrella Alley (id "umbrella-alley", never reuse it) on 2026-11-25: its umbrellas
@@ -274,9 +281,10 @@ private extension Stop {
         address: "36 W Center St",
         latitude: 41.73138,
         longitude: -111.83607,
-        // A real question (Nikhil, 2026-11-25).
-        question: "What year did the Center Street revitalization happen?",
-        acceptedAnswers: ["2019"]
+        // Real (Nikhil, 2026-11-25).
+        riddle: "I'm a street that got a brand-new face.\nIn what year did my makeover take place?",
+        acceptedAnswers: ["2019"],
+        hint: "What year did the Center Street revitalization happen?"
     )
 
     static let thatcherYoung = Stop(
@@ -285,9 +293,10 @@ private extension Stop {
         address: "35 W 100 S",
         latitude: 41.73039,
         longitude: -111.83597,
-        // A real question (Nikhil, 2026-11-25).
-        question: "What was Logan High originally named?",
-        acceptedAnswers: ["Brigham Young College", "BYC"]
+        // Real (Nikhil, 2026-11-25).
+        riddle: "It's a high school now, but long ago\nit had another name. What was it? Do you know?",
+        acceptedAnswers: ["Brigham Young College", "BYC"],
+        hint: "What was Logan High originally named?"
     )
 
     static let ellenEccles = Stop(
@@ -296,9 +305,10 @@ private extension Stop {
         address: "43 S Main St",
         latitude: 41.73060,
         longitude: -111.83544,
-        // A real question (Nikhil, 2026-11-25): the lights in the ceiling of the covered entrance.
-        question: "How many recessed lights are in the ceiling over the front entrance?",
-        acceptedAnswers: ["8", "eight"]
+        // Real (Nikhil, 2026-11-25): the lights in the ceiling of the covered entrance.
+        riddle: "Before the curtain, by the door,\nlook up, not down at the floor.\nHow many lights are set in the ceiling?",
+        acceptedAnswers: ["8", "eight"],
+        hint: "How many recessed lights are in the ceiling over the front entrance?"
     )
 
     // Added on Medium, and Hard.
@@ -309,8 +319,9 @@ private extension Stop {
         address: "85 E 100 N",
         latitude: 41.73354,
         longitude: -111.83279,
-        question: "Practice question: which saint is this church named for?",
-        acceptedAnswers: ["St. John", "Saint John", "St. John's", "Saint John's", "John"]
+        riddle: "Practice riddle: I'm a church that carries a saint's name.\nWhich saint?",
+        acceptedAnswers: ["St. John", "Saint John", "St. John's", "Saint John's", "John"],
+        hint: "Which saint is this church named for?"
     )
 
     static let pioneerMuseum = Stop(
@@ -319,8 +330,9 @@ private extension Stop {
         address: "160 N Main St",
         latitude: 41.73439,
         longitude: -111.83441,
-        question: "Practice question: what's this museum called?",
-        acceptedAnswers: ["Cache Pioneer Museum", "Pioneer Museum", "Cache Pioneer"]
+        riddle: "Practice riddle: I keep the past behind my doors.\nWhat am I called?",
+        acceptedAnswers: ["Cache Pioneer Museum", "Pioneer Museum", "Cache Pioneer"],
+        hint: "What's this museum called?"
     )
 
     static let library = Stop(
@@ -329,8 +341,9 @@ private extension Stop {
         address: "285 N Main St",
         latitude: 41.73641,
         longitude: -111.83530,
-        question: "Practice question: what kind of building is this?",
-        acceptedAnswers: ["Library", "Logan Library", "Public library"]
+        riddle: "Practice riddle: I'm full of stories, but I'm no skyscraper.\nWhat kind of building am I?",
+        acceptedAnswers: ["Library", "Logan Library", "Public library"],
+        hint: "What kind of building is this?"
     )
 
     static let caineLyric = Stop(
@@ -339,8 +352,9 @@ private extension Stop {
         address: "28 W Center St",
         latitude: 41.73129,
         longitude: -111.83590,
-        question: "Practice question: what's this theatre called?",
-        acceptedAnswers: ["Caine Lyric Theatre", "Caine Lyric Theater", "Caine Lyric", "Lyric Theatre", "Lyric Theater", "Lyric"]
+        riddle: "Practice riddle: part of my name means the words to a song.\nWhat am I called?",
+        acceptedAnswers: ["Caine Lyric Theatre", "Caine Lyric Theater", "Caine Lyric", "Lyric Theatre", "Lyric Theater", "Lyric"],
+        hint: "What's this theatre called?"
     )
 
     // Added on Hard.
@@ -351,8 +365,9 @@ private extension Stop {
         address: "290 N 100 W",
         latitude: 41.73684,
         longitude: -111.83691,
-        question: "Practice question: this is the city hall for which city?",
-        acceptedAnswers: ["Logan", "Logan City"]
+        riddle: "Practice riddle: I'm where a city does its business.\nWhich city?",
+        acceptedAnswers: ["Logan", "Logan City"],
+        hint: "This is the city hall for which city?"
     )
 
     static let presbyterianChurch = Stop(
@@ -361,8 +376,9 @@ private extension Stop {
         address: "178 W Center St",
         latitude: 41.73110,
         longitude: -111.83980,
-        question: "Practice question: what kind of church is this?",
-        acceptedAnswers: ["Presbyterian", "First Presbyterian", "Presbyterian Church", "First Presbyterian Church"]
+        riddle: "Practice riddle: my name says I came first.\nWhat kind of church am I?",
+        acceptedAnswers: ["Presbyterian", "First Presbyterian", "Presbyterian Church", "First Presbyterian Church"],
+        hint: "What kind of church is this?"
     )
 
     static let utahTheatre = Stop(
@@ -371,8 +387,9 @@ private extension Stop {
         address: "18 W Center St",
         latitude: 41.73115,
         longitude: -111.83560,
-        question: "Practice question: which state is this theatre named for?",
-        acceptedAnswers: ["Utah"]
+        riddle: "Practice riddle: I share my name with the Beehive State.\nWhich state is that?",
+        acceptedAnswers: ["Utah"],
+        hint: "Which state is this theatre named for?"
     )
 
     static let pioneerPark = Stop(
@@ -382,8 +399,9 @@ private extension Stop {
         address: "Pioneer Park Walkway",
         latitude: 41.73006,
         longitude: -111.83071,
-        question: "Practice question: what's this park called?",
-        acceptedAnswers: ["Pioneer Park", "Pioneer"]
+        riddle: "Practice riddle: I'm named for the people who settled here first.\nWhat am I called?",
+        acceptedAnswers: ["Pioneer Park", "Pioneer"],
+        hint: "What's this park called?"
     )
 
     static let merlinOlsenPark = Stop(
@@ -392,8 +410,9 @@ private extension Stop {
         address: "300 E Center St",
         latitude: 41.73037,
         longitude: -111.82860,
-        question: "Practice question: whose name is on this park?",
-        acceptedAnswers: ["Merlin Olsen", "Olsen"]
+        riddle: "Practice riddle: my first name sounds like a wizard's, but I'm named for a man.\nWho?",
+        acceptedAnswers: ["Merlin Olsen", "Olsen"],
+        hint: "Whose name is on this park?"
     )
 
     static let temple = Stop(
@@ -402,7 +421,8 @@ private extension Stop {
         address: "175 N 300 E",
         latitude: 41.73445,
         longitude: -111.82802,
-        question: "Practice question: what's this building called?",
-        acceptedAnswers: ["Logan Utah Temple", "Logan Temple", "Temple"]
+        riddle: "Practice riddle: I carry this city's name and this state's.\nWhat am I called?",
+        acceptedAnswers: ["Logan Utah Temple", "Logan Temple", "Temple"],
+        hint: "What's this building called?"
     )
 }

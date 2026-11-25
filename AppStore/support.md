@@ -1,16 +1,16 @@
 # Logan Quest Support
 
 Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt. Walk to each stop,
-answer its question, and open the prize box once you've found them all.
+solve its riddle, and open the prize box once you've found them all.
 
 Need help? Email [erulemath@gmail.com](mailto:erulemath@gmail.com).
 
 ## Common questions
 
 **My answer isn't working.**
-Look around the stop again: the answer is something you can see from there. Capitals,
-punctuation, accents and a leading "the" don't matter. If a stop has a **Show Hint** button,
-tap it.
+Look around the stop again: the answer is something you can see from there. Stuck on the
+riddle? Tap **Show Hint** to see it asked as a plain question. Capitals, punctuation, accents
+and a leading "the" don't matter.
 
 **How do I get to the next stop?**
 Tap the stop, then **Walking Directions** to open it in Apple Maps. The stops are in walking
