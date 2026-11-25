@@ -285,8 +285,9 @@ private extension Stop {
         address: "43 S Main St",
         latitude: 41.73060,
         longitude: -111.83544,
-        question: "Practice question: whose name is on this theatre?",
-        acceptedAnswers: ["Ellen Eccles"]
+        // A real question (Nikhil, 2026-11-25): the lights in the ceiling of the covered entrance.
+        question: "How many recessed lights are in the ceiling over the front entrance?",
+        acceptedAnswers: ["8", "eight"]
     )
 
     // Added on Medium, and Hard.

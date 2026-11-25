@@ -46,13 +46,14 @@ something that doesn't build.
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
-- The questions are practice placeholders, except five that Nikhil gave: the Logan Tabernacle's
+- The questions are practice placeholders, except Easy's six, which Nikhil gave: the Logan Tabernacle's
   ("What year was this building erected?", answer 1891, on 2026-11-22), and on 2026-11-25 the
   Old Cache County Courthouse's ("How many kids did David Eccles have with Ellen Eccles?",
   answer 9), Center Street's ("What year did the Center Street revitalization happen?", answer
   2019), the Thatcher-Young Mansion's ("What was Logan High originally named?", answer
-  Brigham Young College) and the Lucky Slice Mural's ("How many people are depicted in the
-  mural?", answer 5). Don't invent "real" ones (plaque wording and so on). Nikhil collects those on foot.
+  Brigham Young College), the Lucky Slice Mural's ("How many people are depicted in the
+  mural?", answer 5) and the Ellen Eccles Theatre's ("How many recessed lights are in the
+  ceiling over the front entrance?", answer 8). Don't invent "real" ones (plaque wording and so on). Nikhil collects those on foot.
 - Stops should be there all year. Center Street replaced Umbrella Alley on 2026-11-25 because
   its umbrellas come down in winter; its id `umbrella-alley` is retired, so never reuse it.
 - Downtown Logan's Medium and Hard are coming soon (Nikhil asked on 2026-11-25): their routes
