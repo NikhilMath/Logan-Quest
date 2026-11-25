@@ -239,7 +239,7 @@ private extension Stop {
         latitude: 41.73479,
         longitude: -111.83567,
         // A real question (Nikhil, 2026-11-25).
-        question: "How many kids did David Eccles have?",
+        question: "How many kids did David Eccles have with Ellen Eccles?",
         acceptedAnswers: ["9", "nine"]
     )
 
