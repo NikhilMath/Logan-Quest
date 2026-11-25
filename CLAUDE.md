@@ -245,7 +245,7 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   stop's address and coordinates and a loop's walking time from Apple Maps:
 
   ```bash
-  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
   ```
 
 - **Change a stop's question or answers:** edit it in `Quest.swift`. List every spelling to

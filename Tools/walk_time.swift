@@ -3,7 +3,7 @@
 // walkingMeters in LoganQuest/Quest.swift.
 //
 //   DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift \
-//     "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan"
+//     "Logan Tabernacle" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT"
 //
 // Times are Apple Maps walking estimates (a little under 3 mph), the same ones the app's
 // Walking Directions button opens.

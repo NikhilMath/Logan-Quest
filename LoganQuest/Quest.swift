@@ -166,9 +166,9 @@ extension Quest {
                 difficulty: .easy,
                 summary: "Five stops in a loop that starts and ends at the Logan Tabernacle.",
                 stops: [.tabernacle, .courthouse, .centerStreet, .thatcherYoung, .ellenEccles],
-                // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
-                walkingMinutes: 18,
-                walkingMeters: 1412
+                // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+                walkingMinutes: 17,
+                walkingMeters: 1374
             ),
             Route(
                 difficulty: .medium,
@@ -177,9 +177,9 @@ extension Quest {
                     .tabernacle, .stJohns, .pioneerMuseum, .library, .courthouse,
                     .centerStreet, .caineLyric, .thatcherYoung, .ellenEccles,
                 ],
-                // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
-                walkingMinutes: 30,
-                walkingMeters: 2225,
+                // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+                walkingMinutes: 28,
+                walkingMeters: 2112,
                 // Nikhil, 2026-11-25: Medium and Hard say "Coming soon" until they're ready.
                 isComingSoon: true
             ),
@@ -191,9 +191,9 @@ extension Quest {
                     .presbyterianChurch, .centerStreet, .caineLyric, .utahTheatre, .thatcherYoung,
                     .ellenEccles, .pioneerPark, .merlinOlsenPark, .temple, .stJohns,
                 ],
-                // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "Umbrella Alley Logan" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
-                walkingMinutes: 72,
-                walkingMeters: 5257,
+                // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
+                walkingMinutes: 71,
+                walkingMeters: 5262,
                 isComingSoon: true
             ),
         ],
@@ -244,14 +244,14 @@ private extension Stop {
     )
 
     // Replaced Umbrella Alley (id "umbrella-alley", never reuse it) on 2026-11-25: its umbrellas
-    // come down for the winter. The pin is where Apple Maps puts "Umbrella Alley Logan", right on
-    // Center Street, which is why the walk_time commands above still look that name up.
+    // come down for the winter. Nikhil says the Center Street sign is right north of The Owl
+    // (36 W Center St, 41.73126, -111.83607 in Apple Maps), so the pin is just north of it.
     static let centerStreet = Stop(
         id: "center-street",
         name: "Center Street",
-        address: "73 W Center St",
-        latitude: 41.73155,
-        longitude: -111.83687,
+        address: "36 W Center St",
+        latitude: 41.73138,
+        longitude: -111.83607,
         // A real question (Nikhil, 2026-11-25).
         question: "What year did the Center Street revitalization happen?",
         acceptedAnswers: ["2019"]
