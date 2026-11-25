@@ -80,7 +80,7 @@ Logan Quest turns a walk around downtown Logan, Utah, into a scavenger hunt.
 Walk from stop to stop and answer a question at each one. Every question is about something you can only see when you're standing there, so you'll have to go and look. Find every stop to open the prize box at the end.
 
 DOWNTOWN LOGAN
-Start and finish at the Logan Tabernacle: 5 stops, about 20 minutes. Along the way you'll pass the Old Cache County Courthouse, Umbrella Alley, the Thatcher-Young Mansion and the Ellen Eccles Theatre.
+Start and finish at the Logan Tabernacle: 5 stops, about 20 minutes. Along the way you'll pass the Old Cache County Courthouse, Center Street, the Thatcher-Young Mansion and the Ellen Eccles Theatre.
 
 THE PRIZE BOX
 Find every stop on your route and the prize box opens. Inside is a coupon from [BUSINESS]: [OFFER]. Show it at the counter. The ticking clock on it shows it's not a screenshot.

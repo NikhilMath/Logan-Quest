@@ -165,7 +165,7 @@ extension Quest {
             Route(
                 difficulty: .easy,
                 summary: "Five stops in a loop that starts and ends at the Logan Tabernacle.",
-                stops: [.tabernacle, .courthouse, .umbrellaAlley, .thatcherYoung, .ellenEccles],
+                stops: [.tabernacle, .courthouse, .centerStreet, .thatcherYoung, .ellenEccles],
                 // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre"
                 walkingMinutes: 18,
                 walkingMeters: 1412
@@ -175,7 +175,7 @@ extension Quest {
                 summary: "Nine stops in a loop that starts and ends at the Logan Tabernacle.",
                 stops: [
                     .tabernacle, .stJohns, .pioneerMuseum, .library, .courthouse,
-                    .umbrellaAlley, .caineLyric, .thatcherYoung, .ellenEccles,
+                    .centerStreet, .caineLyric, .thatcherYoung, .ellenEccles,
                 ],
                 // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "Umbrella Alley Logan" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
                 walkingMinutes: 30,
@@ -188,7 +188,7 @@ extension Quest {
                 summary: "Fifteen stops in a loop that starts and ends at the Logan Tabernacle.",
                 stops: [
                     .tabernacle, .pioneerMuseum, .courthouse, .library, .cityHall,
-                    .presbyterianChurch, .umbrellaAlley, .caineLyric, .utahTheatre, .thatcherYoung,
+                    .presbyterianChurch, .centerStreet, .caineLyric, .utahTheatre, .thatcherYoung,
                     .ellenEccles, .pioneerPark, .merlinOlsenPark, .temple, .stJohns,
                 ],
                 // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "Umbrella Alley Logan" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
@@ -243,14 +243,18 @@ private extension Stop {
         acceptedAnswers: ["9", "nine"]
     )
 
-    static let umbrellaAlley = Stop(
-        id: "umbrella-alley",
-        name: "Umbrella Alley",
+    // Replaced Umbrella Alley (id "umbrella-alley", never reuse it) on 2026-11-25: its umbrellas
+    // come down for the winter. The pin is where Apple Maps puts "Umbrella Alley Logan", right on
+    // Center Street, which is why the walk_time commands above still look that name up.
+    static let centerStreet = Stop(
+        id: "center-street",
+        name: "Center Street",
         address: "73 W Center St",
         latitude: 41.73155,
         longitude: -111.83687,
-        question: "Practice question: what hangs over this alley?",
-        acceptedAnswers: ["Umbrellas", "Umbrella"]
+        // A real question (Nikhil, 2026-11-25).
+        question: "What year did the Center Street revitalization happen?",
+        acceptedAnswers: ["2019"]
     )
 
     static let thatcherYoung = Stop(

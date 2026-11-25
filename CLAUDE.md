@@ -46,10 +46,13 @@ something that doesn't build.
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
-- The questions are practice placeholders, except two that Nikhil gave: the Logan Tabernacle's
-  ("What year was this building erected?", answer 1891, on 2026-11-22) and the Old Cache County
-  Courthouse's ("How many kids did David Eccles have with Ellen Eccles?", answer 9, on 2026-11-25). Don't invent "real" ones
-  (plaque wording and so on). Nikhil collects those on foot.
+- The questions are practice placeholders, except three that Nikhil gave: the Logan Tabernacle's
+  ("What year was this building erected?", answer 1891, on 2026-11-22), the Old Cache County
+  Courthouse's ("How many kids did David Eccles have with Ellen Eccles?", answer 9) and Center
+  Street's ("What year did the Center Street revitalization happen?", answer 2019), both on
+  2026-11-25. Don't invent "real" ones (plaque wording and so on). Nikhil collects those on foot.
+- Stops should be there all year. Center Street replaced Umbrella Alley on 2026-11-25 because
+  its umbrellas come down in winter; its id `umbrella-alley` is retired, so never reuse it.
 - Downtown Logan's Medium and Hard are coming soon (Nikhil asked on 2026-11-25): their routes
   have `isComingSoon: true`, so picking one shows a "Coming Soon" panel instead of its map,
   stops and prize box, and everywhere else uses Easy. Keep them that way until Nikhil says one
