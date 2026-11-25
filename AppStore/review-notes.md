@@ -4,19 +4,19 @@ Paste the text in the box into App Store Connect → Logan Quest → the version
 Information → Notes**. **Fill in** the business's name before submitting.
 
 The reviewer can't walk around Logan, so the notes tell them how to unlock stops from anywhere.
-Typing `1` works for them because App Review builds run in the same sandbox as TestFlight
+Typing `Nikhil` works for them because App Review builds run in the same sandbox as TestFlight
 (`TestUnlock.swift`). The App Store version still turns it off.
 
 ```
 Logan Quest is a walking scavenger hunt in downtown Logan, Utah. Each stop asks a question about something you can only see when you're standing there, so players have to visit every stop.
 
 TESTING WITHOUT TRAVELING TO LOGAN
-Type 1 as the answer to any stop and tap Unlock. This shortcut works only in TestFlight and App Review builds. The App Store version turns it off, so real players have to visit the stops.
+Type Nikhil as the answer to any stop and tap Unlock. This shortcut works only in TestFlight and App Review builds. The App Store version turns it off, so real players have to visit the stops.
 
 A QUICK WAY THROUGH THE APP
 1. On the home screen, tap Downtown Logan.
-2. Leave the difficulty on Easy (5 stops). Medium and Hard say "Coming Soon" and can't be played yet.
-3. Tap a stop, type 1 and tap Unlock. Do the same for the other four stops.
+2. Leave the difficulty on Easy (7 stops). Medium and Hard say "Coming Soon" and can't be played yet.
+3. Tap a stop, type Nikhil and tap Unlock. Do the same for the other six stops.
 4. After the last stop, the Quest complete screen opens. Tap "Open your prize box", then tap the box to see the coupon.
 5. Back on the home screen, tap My Progress to see the badge you earned, and the Reset options.
 

@@ -24,7 +24,7 @@ struct Stop: Identifiable, Hashable {
     }
 
     /// Whether the answer unlocks the stop: one of its accepted answers, or the test code
-    /// ("1") in a build where that works.
+    /// ("Nikhil") in a build where that works.
     @MainActor func unlocks(with answer: String) -> Bool {
         accepts(answer) || TestUnlock.accepts(answer)
     }

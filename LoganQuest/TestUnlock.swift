@@ -1,13 +1,14 @@
 import StoreKit
 
-/// A shortcut for testing without walking downtown: typing "1" as any stop's answer unlocks it.
+/// A shortcut for testing without walking downtown: typing "Nikhil" (any capitalization) as any
+/// stop's answer unlocks it.
 ///
 /// It works in builds run from Xcode (including the simulator) and in TestFlight builds, but
 /// never in the App Store version, where it would let anyone open a prize box. TestFlight and
 /// the App Store get the very same build, so this is decided when the app launches.
 @MainActor
 enum TestUnlock {
-    static let code = "1"
+    static let code = "Nikhil"
 
     /// Debug builds always. Release builds once `checkBuild()` finds they came from TestFlight.
     private(set) static var isAvailable: Bool = {
@@ -20,7 +21,8 @@ enum TestUnlock {
 
     /// Whether the answer is the test code, in a build where the code works.
     static func accepts(_ answer: String) -> Bool {
-        isAvailable && answer.trimmingCharacters(in: .whitespacesAndNewlines) == code
+        isAvailable
+            && answer.trimmingCharacters(in: .whitespacesAndNewlines).caseInsensitiveCompare(code) == .orderedSame
     }
 
     /// Called at launch. TestFlight builds are signed in the App Store's sandbox environment;

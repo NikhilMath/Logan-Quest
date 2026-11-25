@@ -200,7 +200,7 @@ them): use `-LQFound 0` and the Sign Out button instead. Add `-LQDifficulty easy
 difficulty's route, or Easy's while that difficulty is coming soon. Check layout changes on the **iPhone Duo** simulator too, if this Xcode has
 one, in both orientations.
 
-To unlock a stop without its real answer, type `1`. That works in Xcode and TestFlight builds
+To unlock a stop without its real answer, type `Nikhil` (any capitalization). That works in Xcode and TestFlight builds
 but never in the App Store version (`TestUnlock`, checked at launch); keep it that way, since it
 would let anyone open a prize box.
 
