@@ -20,7 +20,7 @@ An iPhone app of scavenger hunts around Logan, Utah. Players walk to each stop o
 
 ## Before launch
 
-- **Real questions.** 14 of the 15 questions in `LoganQuest/Quest.swift` are still practice placeholders ("what's this building called?"); the Logan Tabernacle's (what year it was erected: 1891) is real. Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
+- **Real questions.** 13 of the 15 questions in `LoganQuest/Quest.swift` are still practice placeholders ("what's this building called?"). Two are real: the Logan Tabernacle's (what year it was erected: 1891) and the Old Cache County Courthouse's (how many kids David Eccles had: 9). Walk downtown and replace each with something only someone there would know, like what's carved on a plaque. List every spelling you'd accept in `acceptedAnswers`; matching already ignores case, punctuation, accents and a leading "the".
 - **Check the pins.** Coordinates came from Apple Maps. The old courthouse pin is the Cache Valley Visitors Bureau address (199 N Main St). Apple Maps has no street address for Pioneer Park, so its stop says "Pioneer Park Walkway".
 - **Open Medium and Hard.** They say "Coming soon" for now. When they're ready, delete `isComingSoon: true` from their routes and add them back to the App Store listing and support page.
 - **Walk the loops.** The 18, 30 and 72 minutes are Apple Maps' estimates. Time each difficulty yourself and adjust its route's `walkingMinutes` if it's off.

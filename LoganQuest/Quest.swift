@@ -238,8 +238,9 @@ private extension Stop {
         address: "199 N Main St",
         latitude: 41.73479,
         longitude: -111.83567,
-        question: "Practice question: this was the courthouse for which county?",
-        acceptedAnswers: ["Cache", "Cache County"]
+        // A real question (Nikhil, 2026-11-25).
+        question: "How many kids did David Eccles have?",
+        acceptedAnswers: ["9", "nine"]
     )
 
     static let umbrellaAlley = Stop(
