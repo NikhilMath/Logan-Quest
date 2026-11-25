@@ -263,8 +263,9 @@ private extension Stop {
         address: "35 W 100 S",
         latitude: 41.73039,
         longitude: -111.83597,
-        question: "Practice question: what's this house called?",
-        acceptedAnswers: ["Thatcher-Young Mansion", "Thatcher-Young"]
+        // A real question (Nikhil, 2026-11-25).
+        question: "What was Logan High originally named?",
+        acceptedAnswers: ["Brigham Young College", "BYC"]
     )
 
     static let ellenEccles = Stop(
