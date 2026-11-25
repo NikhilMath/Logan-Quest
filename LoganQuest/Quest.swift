@@ -164,36 +164,36 @@ extension Quest {
         routes: [
             Route(
                 difficulty: .easy,
-                summary: "Five stops in a loop that starts and ends at the Logan Tabernacle.",
-                stops: [.tabernacle, .courthouse, .centerStreet, .thatcherYoung, .ellenEccles],
-                // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
-                walkingMinutes: 17,
-                walkingMeters: 1374
+                summary: "Six stops in a loop that starts and ends at the Logan Tabernacle.",
+                stops: [.tabernacle, .courthouse, .luckySlice, .centerStreet, .thatcherYoung, .ellenEccles],
+                // Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+                walkingMinutes: 18,
+                walkingMeters: 1394
             ),
             Route(
                 difficulty: .medium,
-                summary: "Nine stops in a loop that starts and ends at the Logan Tabernacle.",
+                summary: "Ten stops in a loop that starts and ends at the Logan Tabernacle.",
                 stops: [
                     .tabernacle, .stJohns, .pioneerMuseum, .library, .courthouse,
-                    .centerStreet, .caineLyric, .thatcherYoung, .ellenEccles,
+                    .luckySlice, .centerStreet, .caineLyric, .thatcherYoung, .ellenEccles,
                 ],
-                // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
-                walkingMinutes: 28,
-                walkingMeters: 2112,
+                // Tools/walk_time.swift "Logan Tabernacle" "St. John's Episcopal Church Logan" "Cache Pioneer Museum" "Logan Library" "Cache Valley Visitors Bureau" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+                walkingMinutes: 29,
+                walkingMeters: 2132,
                 // Nikhil, 2026-11-25: Medium and Hard say "Coming soon" until they're ready.
                 isComingSoon: true
             ),
             Route(
                 difficulty: .hard,
-                summary: "Fifteen stops in a loop that starts and ends at the Logan Tabernacle.",
+                summary: "Sixteen stops in a loop that starts and ends at the Logan Tabernacle.",
                 stops: [
                     .tabernacle, .pioneerMuseum, .courthouse, .library, .cityHall,
-                    .presbyterianChurch, .centerStreet, .caineLyric, .utahTheatre, .thatcherYoung,
-                    .ellenEccles, .pioneerPark, .merlinOlsenPark, .temple, .stJohns,
+                    .presbyterianChurch, .luckySlice, .centerStreet, .caineLyric, .utahTheatre,
+                    .thatcherYoung, .ellenEccles, .pioneerPark, .merlinOlsenPark, .temple, .stJohns,
                 ],
-                // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
-                walkingMinutes: 71,
-                walkingMeters: 5262,
+                // Tools/walk_time.swift "Logan Tabernacle" "Cache Pioneer Museum" "Cache Valley Visitors Bureau" "Logan Library" "Logan City Hall" "First Presbyterian Church Logan" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Caine Lyric Theatre" "Utah Theatre Logan" "Thatcher Young Mansion" "Ellen Eccles Theatre" "Pioneer Park Logan" "Merlin Olsen Central Park" "Logan Utah Temple" "St. John's Episcopal Church Logan"
+                walkingMinutes: 72,
+                walkingMeters: 5283,
                 isComingSoon: true
             ),
         ],
@@ -241,6 +241,17 @@ private extension Stop {
         // A real question (Nikhil, 2026-11-25).
         question: "How many kids did David Eccles have with Ellen Eccles?",
         acceptedAnswers: ["9", "nine"]
+    )
+
+    static let luckySlice = Stop(
+        id: "lucky-slice-mural",
+        name: "Lucky Slice Mural",
+        address: "37 W Center St",
+        latitude: 41.73154,
+        longitude: -111.83601,
+        // A real question (Nikhil, 2026-11-25).
+        question: "How many people are depicted in the mural?",
+        acceptedAnswers: ["5", "five"]
     )
 
     // Replaced Umbrella Alley (id "umbrella-alley", never reuse it) on 2026-11-25: its umbrellas
