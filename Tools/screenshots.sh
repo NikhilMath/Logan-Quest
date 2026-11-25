@@ -62,7 +62,7 @@ shot() {
 
 echo "Taking screenshots…"
 shot 1-quest-map 3 8 quest     # map tiles take a moment to load
-shot 2-question  3 5 stop
+shot 2-riddle    3 5 stop
 shot 3-complete  5 5 complete
 shot 4-prize     5 6 prizeOpen # the box opens by itself after a second
 shot 5-quests    3 5
