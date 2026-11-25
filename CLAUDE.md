@@ -46,10 +46,11 @@ something that doesn't build.
   commit, even to get a build working on another Mac.
 - Quests and stops live in `LoganQuest/Quest.swift`. Progress is keyed by quest and stop `id`:
   never rename one that has shipped.
-- The questions are practice placeholders, except Easy's six, which Nikhil gave: the Logan Tabernacle's
+- The questions are practice placeholders, except Easy's seven, which Nikhil gave: the Logan Tabernacle's
   ("What year was this building erected?", answer 1891, on 2026-11-22), and on 2026-11-25 the
   Old Cache County Courthouse's ("How many kids did David Eccles have with Ellen Eccles?",
-  answer 9), Center Street's ("What year did the Center Street revitalization happen?", answer
+  answer 9), Laub Plaza's ("Which foundation donated the fire pit?", answer the Measom Family
+  Foundation), Center Street's ("What year did the Center Street revitalization happen?", answer
   2019), the Thatcher-Young Mansion's ("What was Logan High originally named?", answer
   Brigham Young College), the Lucky Slice Mural's ("How many people are depicted in the
   mural?", answer 5) and the Ellen Eccles Theatre's ("How many recessed lights are in the
@@ -248,7 +249,7 @@ The app is set up in App Store Connect as **Logan Quest** (SKU `loganquests`).
   stop's address and coordinates and a loop's walking time from Apple Maps:
 
   ```bash
-  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
+  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift Tools/walk_time.swift "Logan Tabernacle" "Cache Valley Visitors Bureau" "Carol and Jim Laub Plaza Logan" "Lucky Slice Logan" "36 W Center St, Logan, UT" "Thatcher Young Mansion" "Ellen Eccles Theatre"
   ```
 
 - **Change a stop's question or answers:** edit it in `Quest.swift`. List every spelling to
